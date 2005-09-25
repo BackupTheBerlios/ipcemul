@@ -38,17 +38,17 @@ int main(int argc, char **argv)
 
 //	printf("in main\n");	
 // process 1        
-	if(fork_p(1,1,1,2) < 0)		// создаем процесс с pid = 1, uid = 1, gid = 1 и  приоритетом 2
+	if(fork_p(1,1,1,2) < 0)
         {
                 printf("cannot create proc\n");
                 return -1;
         }
-        if(Lab_msgget(1) < 0)		//функция создания очереди
+        if(Lab_msgget(1) < 0)
         {
                 printf("mistake in msgget\n");
                 return -1;
         }
-        if(Lab_msgrcv(1,0) < 0)		//функция получения сообщения
+        if(Lab_msgrcv(1,0) < 0)
         {
                 printf("mistake in msgsnd\n");
                 return -1;
@@ -65,7 +65,7 @@ int main(int argc, char **argv)
                 printf("mistake in msgget\n");
                 return -1;
         }
-        if(Lab_msgsnd(1,0) < 0)		// функция посылки сообщения
+        if(Lab_msgsnd(1,0) < 0)
         {
                 printf("mistake in msgrcv\n");
                 return -1;
