@@ -61,18 +61,18 @@ int fork_p(int pid, int uid, int gid, int prio)
 			return -1;
 		}
 		tsk->dscrptr = NULL;
-		tsk->code = NULL;	//процесс пока ничего не выполняет
+		tsk->code = NULL;
 		tsk->pid = pid;
 		tsk->uid = uid;
 		tsk->gid = gid;
 		tsk->prio = prio;
-		tsk->runned = 0;	//еще не выполнялся
-		tsk->run_time = 0;	//время выполнения пока 0
+		tsk->runned = 0;
+		tsk->run_time = 0;
 		tsk->search_msg = 0;
-		tsk->next = root_task;	//в список общий все засовываем
+		tsk->next = root_task;
 		root_task = tsk;
 		nr_running++;
-		current_proc = tsk;	// выставляем как текущий процесс
+		current_proc = tsk;
 	}
 	else
 	{
@@ -84,12 +84,11 @@ int fork_p(int pid, int uid, int gid, int prio)
 	return 0;
 }
 
-int AddCode(int num,...)	//функция добавления работы для процесса
+int AddCode(int num,...)
 {
-	int *pp = &num;//parameter pointer
+	int *pp = &num;
 	struct task *tsk = NULL;
 	struct func *function = NULL;
-//	struct func *help_p = NULL;
 	struct func *add_code = NULL;
 	
 	function = (struct func *)malloc(sizeof(struct func));
