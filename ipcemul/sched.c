@@ -21,12 +21,12 @@
 #include "fork.h"
 #include "protocol.h"
 
-extern struct task *R_task;
+extern struct task *root_task;
 extern struct task *current_proc;
 
 int scheduler(void)
 {
-	struct task *tsk_add_time = R_task;
+	struct task *tsk_add_time = root_task;
 	struct task *tsk;
 	
 	tsk = Find_max_prio();

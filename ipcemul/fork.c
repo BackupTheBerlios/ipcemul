@@ -31,11 +31,11 @@ extern struct msg_receiver *R_msg_r;
 
 struct task *current_proc = NULL;
 
-struct task *R_task = NULL;
+struct task *root_task = NULL;
 
 struct task *Find_task(int pid)
 {
-	struct task *tsk = R_task;
+	struct task *tsk = root_task;
 	
 	while(tsk != NULL)
 	{
@@ -69,8 +69,8 @@ int fork_p(int pid, int uid, int gid, int prio)
 		tsk->runned = 0;	//еще не выполнялся
 		tsk->run_time = 0;	//время выполнения пока 0
 		tsk->search_msg = 0;
-		tsk->next = R_task;	//в список общий все засовываем
-		R_task = tsk;
+		tsk->next = root_task;	//в список общий все засовываем
+		root_task = tsk;
 		nr_running++;
 		current_proc = tsk;	// выставляем как текущий процесс
 	}
@@ -203,7 +203,7 @@ struct task *Find_max_prio(void)
 {
 	struct task *max_tsk = NULL;
 	int max = -1;
-	struct task *list = R_task;
+	struct task *list = root_task;
 	
 	if(nr_running == 0)
 	{
@@ -223,7 +223,7 @@ struct task *Find_max_prio(void)
 		}
 	}
 	
-	list = R_task;
+	list = root_task;
 	
 	while(list != NULL)
 	{

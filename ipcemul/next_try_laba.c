@@ -35,8 +35,6 @@ int main(int argc, char **argv)
 {
         int i;
 
-
-//	printf("in main\n");	
 // process 1        
 	if(fork_p(1,1,1,2) < 0)
         {
