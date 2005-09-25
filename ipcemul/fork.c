@@ -1,0 +1,244 @@
+/***************************************************************************
+ *   Copyright (C) 2005 by root   *
+ *   root@Nirvana   *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
+#include <stdio.h>
+#include <stdlib.h>
+#include "fork.h"
+#include "msg.h"
+#include "protocol.h"
+
+int nr_running = 0;
+
+extern struct Lab_msg_queue *R_ipc;
+
+extern struct msg_receiver *R_msg_r; 
+
+struct task *current_proc = NULL;
+
+struct task *R_task = NULL;
+
+struct task *Find_task(int pid)
+{
+	struct task *tsk = R_task;
+	
+	while(tsk != NULL)
+	{
+		if (tsk->pid == pid)
+			return tsk;
+		tsk = tsk->next;
+	}
+	
+	return NULL;
+}
+
+int fork_p(int pid, int uid, int gid, int prio)
+{
+	struct task *tsk = NULL;
+	
+	tsk = Find_task(pid);
+	if(tsk == NULL)
+	{
+		tsk = (struct task *)malloc(sizeof(struct task));
+		if(tsk == NULL)
+		{
+			printf("cannot alloc mem\n");
+			return -1;
+		}
+		tsk->dscrptr = NULL;
+		tsk->code = NULL;	//процесс пока ничего не выполняет
+		tsk->pid = pid;
+		tsk->uid = uid;
+		tsk->gid = gid;
+		tsk->prio = prio;
+		tsk->runned = 0;	//еще не выполнялся
+		tsk->run_time = 0;	//время выполнения пока 0
+		tsk->search_msg = 0;
+		tsk->next = R_task;	//в список общий все засовываем
+		R_task = tsk;
+		nr_running++;
+		current_proc = tsk;	// выставляем как текущий процесс
+	}
+	else
+	{
+		printf("func fork: ");
+		printf("we have process with pid = %d\n",pid);
+		return 0;
+	}
+	
+	return 0;
+}
+
+int AddCode(int num,...)	//функция добавления работы для процесса
+{
+	int *pp = &num;//parameter pointer
+	struct task *tsk = NULL;
+	struct func *function = NULL;
+//	struct func *help_p = NULL;
+	struct func *add_code = NULL;
+	
+	function = (struct func *)malloc(sizeof(struct func));
+	if(function == NULL)
+	{
+		printf("cannot alloc mem\n");
+		return -1;
+	}
+	
+	//tsk = Find_task(*(++pp));
+	tsk = current_proc;
+	
+	function->func = *(++pp);
+	function->num_param = num - 1;
+	function->param_1 = *(++pp);
+	if((num - 2) == 1)
+		function->param_2 = *(++pp);
+	else if((num - 2) == 2)
+		function->param_3 = *(++pp);
+	function->next = NULL;
+	
+	add_code = tsk->code;
+	while (add_code != NULL)
+	{
+		if(add_code->next == NULL)
+		{
+			add_code->next = function;
+			return 0;
+		}
+		add_code = add_code->next;
+	}
+	tsk->code = function;
+	
+	return 0;
+}
+
+void RemoveCode(struct task *tsk)
+{
+	struct func *func_h = NULL;
+	
+	func_h = tsk->code;
+	free(func_h);
+	tsk->code = tsk->code->next;
+}
+
+int Add2proc_dscrptr(int msgid)
+{
+	struct descriptor *desc = NULL;
+	
+	desc = (struct descriptor *)malloc(sizeof(struct descriptor));
+	if(desc == NULL)
+	{
+		printf("cannot alloc mem\n");
+		return -1;
+	}
+	else
+	{
+		desc->descrptr = msgid;
+		desc->next = NULL;
+		current_proc->dscrptr = desc;
+	}
+	
+	return 0;
+}
+
+int ExecCode(struct task *tsk)
+{
+	int result;
+	
+	OneStringToProtocol("\tin ExecCode");
+	if(tsk->code->func == 0)
+	{
+		result = Lab_sys_msgsnd(tsk->code->param_1, tsk->code->param_2);
+		if(result < 0)
+		{
+			printf("mistake in msgrcv\n");
+			return -1;
+		}
+		RemoveCode(tsk);
+	}
+	else if(tsk->code->func == 1)
+	{
+		result = Lab_sys_msgrcv(tsk->code->param_1, tsk->code->param_2);
+		if(result < 0)
+		{
+			printf("mistake in msgrcv\n");
+			return -1;
+		}
+		else if (result == 1)
+			;
+		else
+			RemoveCode(tsk);
+	}
+	else if(tsk->code->func == 2)
+	{
+		if (Lab_sys_msgget(tsk->code->param_1) < 0)
+		{
+			printf("mistake in msgget\n");
+			return -1;
+		}
+		tsk->dscrptr = current_proc->dscrptr;
+		RemoveCode(tsk);
+	}
+	else
+		return -1;
+	
+	return 0;
+}
+
+struct task *Find_max_prio(void)
+{
+	struct task *max_tsk = NULL;
+	int max = -1;
+	struct task *list = R_task;
+	
+	if(nr_running == 0)
+	{
+		while(list != NULL)
+		{
+			if(R_msg_r != NULL)
+			{
+				if(list->pid == R_msg_r->r_tsk->pid)
+					;
+			}
+			else
+			{
+				list->runned = 0;
+				nr_running++;
+				list = list->next;
+			}
+		}
+	}
+	
+	list = R_task;
+	
+	while(list != NULL)
+	{
+		if(list->runned != 1)
+		{
+			if(list->prio > max)
+			{
+				max = list->prio;
+				max_tsk = list;
+			}
+		}
+		list = list->next;
+	}
+	
+	max_tsk->runned = 1;
+	nr_running--;
+	return max_tsk;
+}
