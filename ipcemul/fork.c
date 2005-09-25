@@ -95,7 +95,7 @@ int AddCode(int num,...)
 	int *pp = &num;
 	struct task *tsk = NULL;
 	struct func *function = NULL;
-	/* struct func *add_code = NULL; */
+	struct func *add_code = NULL; 
 	
 	function = (struct func *)malloc(sizeof(struct func));
 	if(function == NULL)
@@ -116,13 +116,6 @@ int AddCode(int num,...)
 		function->param_3 = *(++pp);
 	function->next = NULL;
 	
-        while (tsk -> code != NULL) {
-            tsk = tsk -> next;
-        }
-        tsk -> code = function;
-
-        /* What the f**k is written here? %-) */
-	/*
         add_code = tsk->code;
 	while (add_code != NULL)
 	{
@@ -134,7 +127,6 @@ int AddCode(int num,...)
 		add_code = add_code->next;
 	}
 	tsk->code = function;
-        */
 	
 	return 0;
 }
