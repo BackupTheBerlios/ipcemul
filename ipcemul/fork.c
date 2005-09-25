@@ -69,16 +69,22 @@ int fork_p(int pid, int uid, int gid, int prio)
 		tsk->runned = 0;
 		tsk->run_time = 0;
 		tsk->search_msg = 0;
+                
+                /* New task is situated before first task (stack) */
 		tsk->next = root_task;
-		root_task = tsk;
+                
+		/* New task becomes the first task */
+                root_task = tsk;
+                
 		nr_running++;
+                
+                /* New task becomes the current task */
 		current_proc = tsk;
 	}
 	else
 	{
 		printf("func fork: ");
 		printf("we have process with pid = %d\n",pid);
-		return 0;
 	}
 	
 	return 0;
