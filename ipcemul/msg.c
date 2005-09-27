@@ -114,7 +114,7 @@ int Lab_sys_msgrcv(long type, int flag)
 	while(msg != NULL)
 	{
 		current_proc->search_msg++;
-		result = testmsg(msg,current_proc->code->param_1,mode);
+		result = testmsg(msg,current_proc->code->param[1],mode);
 		if(result == 1)
 			break;
 		else
@@ -132,7 +132,7 @@ int Lab_sys_msgrcv(long type, int flag)
 		}
 		msg_r->r_tsk = current_proc;
 		msg_r->r_mode = mode;
-		msg_r->r_msgtype = current_proc->code->param_1;
+		msg_r->r_msgtype = current_proc->code->param[1];
 		msg_r->next = R_msg_r;
 		R_msg_r = msg_r;
 		return 1;

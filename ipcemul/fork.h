@@ -21,10 +21,7 @@ struct func
 {
 	int func; //0 msgsnd, 1 msgrcv, 2 msgget
 	int num_param;
-	int param_1;
-	int param_2;
-	int param_3;
-	int param_4;
+	int param[4];
 	struct func *next;
 };
 

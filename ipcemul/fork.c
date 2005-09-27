@@ -99,6 +99,7 @@ int fork_p(int pid, int uid, int gid, int prio)
 
 int AddCode(int num,...)
 {
+	int i;
 	int *pp = &num;
 	struct task *tsk = NULL;
 	struct func *function = NULL;
@@ -116,11 +117,8 @@ int AddCode(int num,...)
 	
 	function->func = *(++pp);
 	function->num_param = num - 1;
-	function->param_1 = *(++pp);
-	if((num - 2) == 1)
-		function->param_2 = *(++pp);
-	else if((num - 2) == 2)
-		function->param_3 = *(++pp);
+	for (i=1;i<num;i++)
+		function->param[i]=*(++pp);
 	function->next = NULL;
 	
         add_code = tsk->code;
@@ -174,7 +172,7 @@ int ExecCode(struct task *tsk)
 //	OneStringToProtocol("\tin ExecCode");
 	if(tsk->code->func == 0)
 	{
-		result = Lab_sys_msgsnd(tsk->code->param_1, tsk->code->param_2);
+		result = Lab_sys_msgsnd(tsk->code->param[1], tsk->code->param[2]);
 		if(result < 0)
 		{
 			printf("mistake in msgrcv\n");
@@ -184,7 +182,7 @@ int ExecCode(struct task *tsk)
 	}
 	else if(tsk->code->func == 1)
 	{
-		result = Lab_sys_msgrcv(tsk->code->param_1, tsk->code->param_2);
+		result = Lab_sys_msgrcv(tsk->code->param[1], tsk->code->param[2]);
 		if(result < 0)
 		{
 			printf("mistake in msgrcv\n");
@@ -197,7 +195,7 @@ int ExecCode(struct task *tsk)
 	}
 	else if(tsk->code->func == 2)
 	{
-		if (Lab_sys_msgget(tsk->code->param_1) < 0)
+		if (Lab_sys_msgget(tsk->code->param[1]) < 0)
 		{
 			printf("mistake in msgget\n");
 			return -1;

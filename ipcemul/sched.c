@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include <stdio.h>
-#include <unistd.h>
 #include "fork.h"
+#include <unistd.h>
 #include "time.h"
 
 extern struct task *root_task;
