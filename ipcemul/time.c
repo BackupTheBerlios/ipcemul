@@ -24,15 +24,17 @@
 #include<sys/ipc.h>
 #include<sys/shm.h>
 #include<signal.h>
+#include<sys/mman.h>
+#include<sys/stat.h>
+#include<fcntl.h>
 
-int *timeptr1;
-int shmid1;
+int *timeptr;
 int pid;
 
-void DtTime(void)
-{
-	shmdt(timeptr1);
-}
+//void DtTime(void)
+//{
+//	shmdt(timeptr1);
+//}
 
 void stop(int sig)
 {
@@ -41,62 +43,75 @@ void stop(int sig)
 	exit(1);
 }
 
-void RcvTime(void)
-{
-	int key1;
-	
-	if ((key1 = ftok("a.out", 'A')) < 0)
-	{
-		printf("Cannot get key\n");
-		exit(-1);
-	}
-
-	if ((shmid1 = shmget(key1, 2, 0666|IPC_CREAT)) < 0)
-	{
-		printf("Cannot alloc memory in main\n");
-		exit(-1);
-	}
-
-	if ((timeptr1 = (int *)shmat(shmid1,NULL,0)) == NULL)
-	{
-		printf("mistake in shmad parent\n");
-		exit(-1);
-	}
-	
-}
+//void RcvTime(void)
+//{
+//	int key1;
+//	
+//	if ((key1 = ftok("a.out", 'A')) < 0)
+//	{
+//		printf("Cannot get key\n");
+//		exit(-1);
+//	}
+//
+//	if ((shmid1 = shmget(key1, 2, 0666|IPC_CREAT)) < 0)
+//	{
+//		printf("Cannot alloc memory in main\n");
+//		exit(-1);
+//	}
+//
+//	if ((timeptr1 = (int *)shmat(shmid1,NULL,0)) == NULL)
+//	{
+//		printf("mistake in shmad parent\n");
+//		exit(-1);
+//	}
+//	
+//}
 
 void TicTac(void)
 {
-	int key2, shmid2;
-	int *timeptr2;
+//	int key2, shmid2;
+	int fd;
+	int zero = 0
 
+	if ((fd = open("time",O_RDWR | O_CREAT,0666)) == -1)
+	{
+		printf("cannot make time file\n");
+		exit(-1);
+	}
+
+	if( write(fd, &zero, sizeof(int)) == -1)
+	{
+		printf("cannot init time file\n");
+		exit(-1);
+	}
+
+	timeptr = mmap(NULL, sizeof(int), PROT_READ|PROT_WRITE,MAP_SHARED,fd,0);
+	setbuf(stdout,NULL);
 	if ((pid = fork()) == 0)
 	{
-		*timeptr2 = 0;
-		
 		signal(SIGINT,stop);
 		
-		if ((key2 = ftok("a.out", 'A')) < 0)
-		{
-			printf("Cannot get key\n");
-			exit(-1);
-		}
+//		if ((key2 = ftok("a.out", 'A')) < 0)
+//		{
+//			printf("Cannot get key\n");
+//			exit(-1);
+//		}
 
-		if ((shmid2 = shmget(key2, 2, 0)) < 0)
-		{
-			printf("Cannot alloc memory in child\n");
-			exit(-1);
-		}
+//		if ((shmid2 = shmget(key2, 2, 0)) < 0)
+//		{
+//			printf("Cannot alloc memory in child\n");
+//			exit(-1);
+//		}
 
-		if ((timeptr2 = (int *)shmat(shmid2,NULL,0)) == NULL)
-		{
-			printf("mistake in shmad child\n");
-			exit(-1);
-		}
+//		if ((timeptr2 = (int *)shmat(shmid2,NULL,0)) == NULL)
+//		{
+//			printf("mistake in shmad child\n");
+//			exit(-1);
+//		}
 
 		while(1)
 		{
-			(*timeptr2)++;
+			(*timeptr)++;
 
 		}
 	}
