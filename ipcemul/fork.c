@@ -19,15 +19,19 @@
  ***************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include "fork.h"
 #include "msg.h"
 #include "protocol.h"
+#include "time.h"
 
 int nr_running = 0;
 
 extern struct Lab_msg_queue *R_ipc;
 
 extern struct msg_receiver *R_msg_r; 
+
+extern int *timeptr;
 
 struct task *current_proc = NULL;
 
@@ -37,6 +41,7 @@ struct task *Find_task(int pid)
 {
 	struct task *tsk = root_task;
 	
+	usleep(50);
 	while(tsk != NULL)
 	{
 		if (tsk->pid == pid)
@@ -87,6 +92,8 @@ int fork_p(int pid, int uid, int gid, int prio)
 		printf("we have process with pid = %d\n",pid);
 	}
 	
+	usleep(50);
+	printf("time create process with pid %d is %d\n",pid, *timeptr);
 	return 0;
 }
 
@@ -164,7 +171,7 @@ int ExecCode(struct task *tsk)
 {
 	int result;
 	
-	OneStringToProtocol("\tin ExecCode");
+//	OneStringToProtocol("\tin ExecCode");
 	if(tsk->code->func == 0)
 	{
 		result = Lab_sys_msgsnd(tsk->code->param_1, tsk->code->param_2);
@@ -200,6 +207,8 @@ int ExecCode(struct task *tsk)
 	}
 	else
 		return -1;
+	
+	usleep(100);
 	
 	return 0;
 }
