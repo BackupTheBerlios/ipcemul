@@ -18,6 +18,4 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 void TicTac(void);
-void RcvTime(void);
-void DtTime(void);
 void stop_TicTak(void);
