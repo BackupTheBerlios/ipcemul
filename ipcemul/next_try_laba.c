@@ -28,13 +28,14 @@
 #include "fork.h"
 #include "msg.h"
 
-extern int *timeptr1;
+extern int *timeptr;
 extern int pid;
 
 int main(int argc, char **argv)
 {
         int i;
 
+	TicTac();
 // process 1        
 	if(fork_p(1,1,1,2) < 0)
         {
@@ -99,22 +100,22 @@ int main(int argc, char **argv)
         }
 
 
-	RcvTime();
-	TicTac();
-	DtTime();
+//	RcvTime();
+//	TicTac();
+//	DtTime();
 
 	for (i = 0; i < 10; i++)
 	{	
-		usleep(10);
+//		usleep(10);
 		scheduler();
-		RcvTime();
-		printf("\n   time = %d\n",*timeptr1);
-		DtTime();
+//		RcvTime();
+//		printf("\n   time = %d\n",*timeptr1);
+//		DtTime();
 	}
 	
 	stop_TicTak();
 
-	waitpid(pid, NULL, 0);
+//	waitpid(pid, NULL, 0);
 
         return 0;
 }
