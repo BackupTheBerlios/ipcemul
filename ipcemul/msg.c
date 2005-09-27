@@ -19,9 +19,11 @@
  ***************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include "msg.h"
 #include "fork.h"
 #include "protocol.h"
+#include "time.h"
  
 struct Lab_msg_queue *R_ipc = NULL;
 
@@ -31,12 +33,15 @@ struct msg_receiver *R_msg_r = NULL;
 
 extern struct task *current_proc;
 
+extern int *timeptr;
+
 struct Lab_msg_queue *Find_ipc_key(int key)
 {
 	struct Lab_msg_queue *ipc_k = R_ipc;
 	
-	OneStringToProtocol("\t\tin Find_ipc_key");
+//	OneStringToProtocol("\t\tin Find_ipc_key");
 	
+	usleep(100);
 	while(ipc_k != NULL)
 	{
 		if (ipc_k->key == key)
@@ -75,10 +80,15 @@ int Lab_sys_msgget(int key)
 	else
 	{
 		Add2proc_dscrptr(ipc_->msgid);
+		printf("queue already exist\n");
 		return ipc_->msgid;
 	}
 	
 	Add2proc_dscrptr(ipc_->msgid);
+
+	usleep(100);
+	printf("time create queue with key %d is %d\n", key, *timeptr);
+	
 	return ipc_->msgid;
 }
 
@@ -134,6 +144,7 @@ int Lab_sys_msgrcv(long type, int flag)
 		FreeMsg(msg);
 	}
 	
+	usleep(50);
 	return 0;
 }
 
@@ -157,6 +168,8 @@ int testmsg(struct msg_msg* msg,long type,int mode)
 				return 1;
 			break;
 	}
+	
+	usleep(50);
 	return 0;
 }
 
@@ -164,7 +177,13 @@ int Lab_sys_msgsnd(int msg_type, int flag)
 {
 	struct msg_msg *msg = NULL;
 	
-	OneStringToProtocol("\t\tin Lab_sys_msgsnd");
+//	OneStringToProtocol("\t\tin Lab_sys_msgsnd");
+	if (msg_type < 0)
+	{
+		printf("yuo must use msg type > 0\n");
+		exit(-1);
+	}
+	
 	msg = (struct msg_msg *)malloc(sizeof(struct msg_msg));
 	if(msg == NULL)
 	{
@@ -175,6 +194,9 @@ int Lab_sys_msgsnd(int msg_type, int flag)
 	msg->next = R_msg;
 	R_msg = msg;
 	
+	usleep(100);
+	printf("time send msg is %d\n", *timeptr);
+	
 	return 0;
 }
 
@@ -182,7 +204,7 @@ void FreeMsg(struct msg_msg *msg)
 {
 	struct msg_msg *msg_h = NULL;
 	
-	OneStringToProtocol("\t\tin FreeMsg");
+//	OneStringToProtocol("\t\tin FreeMsg");
 
 	msg_h = msg;
 	free(msg_h);
@@ -197,7 +219,7 @@ int convert_mode(long msgtyp, int msgflg)
 	*  msgtyp > 0 => get first message of matching type.
 	*  msgtyp < 0 => get message with least type must be < abs(msgtype).  
 	*/
-	OneStringToProtocol("\t\tin convert_mode");
+//	OneStringToProtocol("\t\tin convert_mode");
 	if(msgtyp == 0)
 		return SEARCH_ANY;
 	if(msgtyp < 0)
@@ -207,6 +229,8 @@ int convert_mode(long msgtyp, int msgflg)
 	}
 	if(msgflg & MSG_EXCEPT)
 		return SEARCH_NOTEQUAL;
+	
+	usleep(20);
 	return SEARCH_EQUAL;
 }
 
@@ -214,7 +238,7 @@ struct Lab_msg_queue *FindQueue(int descriptor)
 {
 	struct Lab_msg_queue *que = R_ipc;
 	
-	OneStringToProtocol("\t\tin FindQueue");
+//	OneStringToProtocol("\t\tin FindQueue");
 	while(que != NULL)
 	{
 		if(que->msgid == descriptor)
@@ -225,21 +249,25 @@ struct Lab_msg_queue *FindQueue(int descriptor)
 		que = que->next;
 	}
 	
-	OneStringToProtocol("\t\t\tnot found");
+//	OneStringToProtocol("\t\t\tnot found");
+	usleep(100);
 	return NULL;
 }
 
 int Lab_msgget(int key)
 {
+	usleep(200);
 	return AddCode(2,2,key);
 }
 
 int Lab_msgsnd(long msg_type, int msg_flag)
 {
+	usleep(200);
 	return AddCode(3,0, msg_type, msg_flag);
 }
 
 int Lab_msgrcv(int msg_type, long msg_flag)
 {
+	usleep(200);
 	return AddCode(3,1, msg_type, msg_flag);
 }
