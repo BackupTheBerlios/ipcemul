@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include <stdio.h>
-#include "fork.h"
+#include <unistd.h>
 #include "fork.h"
 #include "time.h"
 
@@ -37,7 +37,7 @@ int scheduler(void)
 	current_proc = tsk;
 	
 	usleep(300);
-	printf("\nbegin work task with pid %d\n",tsk->pid);
+	printf("\nbegin work task with pid %d at time %d\n",tsk->pid, *timeptr);
 	begin=*timeptr;
 	if(tsk->code == NULL)
 	{
