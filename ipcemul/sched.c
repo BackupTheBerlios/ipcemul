@@ -19,29 +19,32 @@
  ***************************************************************************/
 #include <stdio.h>
 #include "fork.h"
-#include "protocol.h"
+#include "fork.h"
+#include "time.h"
 
 extern struct task *root_task;
 extern struct task *current_proc;
+extern int *timeptr;
 
 int scheduler(void)
 {
 	struct task *tsk_add_time = root_task;
 	struct task *tsk;
+	int begin;
 	
 	tsk = Find_max_prio();
 	
 	current_proc = tsk;
 	
+	usleep(300);
 	printf("\nbegin work task with pid %d\n",tsk->pid);
-	
+	begin=*timeptr;
 	if(tsk->code == NULL)
 	{
 		printf("NULL proc\n");
 	}
 	else
 	{
-		OneStringToProtocol("\tbefore ExecCode");
 		ExecCode(tsk);
 	}
 	
@@ -51,7 +54,8 @@ int scheduler(void)
 		tsk_add_time = tsk_add_time->next;
 	}
 	
-	printf("end work task with pid %d\n",tsk->pid);
+	printf("end work task with pid %d at time %d\n",tsk->pid, *timeptr);
+	printf("time in work is %d\n\n", *timeptr-begin);
 	
 	return 0;
 }
