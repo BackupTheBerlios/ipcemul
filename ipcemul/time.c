@@ -71,7 +71,7 @@ void TicTac(void)
 {
 //	int key2, shmid2;
 	int fd;
-	int zero = 0
+	int zero = 0;
 
 	if ((fd = open("time",O_RDWR | O_CREAT,0666)) == -1)
 	{
