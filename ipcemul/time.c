@@ -27,10 +27,8 @@
 #include<sys/mman.h>
 #include<sys/stat.h>
 #include<fcntl.h>
-
 int *timeptr;
 int pid;
-
 //void DtTime(void)
 //{
 //	shmdt(timeptr1);
@@ -39,7 +37,6 @@ int pid;
 void stop(int sig)
 {
 	printf("exit shild\n");
-	
 	exit(1);
 }
 
@@ -72,25 +69,22 @@ void TicTac(void)
 //	int key2, shmid2;
 	int fd;
 	int zero = 0;
-
 	if ((fd = open("time",O_RDWR | O_CREAT,0666)) == -1)
 	{
 		printf("cannot make time file\n");
 		exit(-1);
 	}
-
 	if( write(fd, &zero, sizeof(int)) == -1)
 	{
 		printf("cannot init time file\n");
 		exit(-1);
 	}
-
 	timeptr = mmap(NULL, sizeof(int), PROT_READ|PROT_WRITE,MAP_SHARED,fd,0);
 	setbuf(stdout,NULL);
 	if ((pid = fork()) == 0)
 	{
 		signal(SIGINT,stop);
-		
+
 //		if ((key2 = ftok("a.out", 'A')) < 0)
 //		{
 //			printf("Cannot get key\n");
@@ -108,7 +102,6 @@ void TicTac(void)
 //			printf("mistake in shmad child\n");
 //			exit(-1);
 //		}
-
 		while(1)
 		{
 			(*timeptr)++;
@@ -120,4 +113,5 @@ void TicTac(void)
 void stop_TicTak(void)
 {
 	kill(SIGINT,pid);
+	
 }

@@ -55,7 +55,7 @@ struct task
 #define SEARCH_LESSEQUAL        4
 
 #define MSG_EXCEPT      020000  /* recv any msg except of specified type.*/
-
+#define IPC_NOWAIT 00004000   /* return error on wait */
 int AddCode(int num,...);
 struct task *Find_max_prio(void);
 int fork_p(int pid, int uid, int gid, int prio);

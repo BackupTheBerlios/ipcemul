@@ -123,6 +123,8 @@ int Lab_sys_msgrcv(long type, int flag)
 	
 	if(msg == NULL)
 	{
+		if (flag & IPC_NOWAIT)
+			return 0;
 		printf("msg == NULL\n");
 		msg_r = (struct msg_receiver *)malloc(sizeof(struct msg_receiver));
 		if(msg_r == NULL)
@@ -180,7 +182,7 @@ int Lab_sys_msgsnd(int msg_type, int flag)
 //	OneStringToProtocol("\t\tin Lab_sys_msgsnd");
 	if (msg_type < 0)
 	{
-		printf("yuo must use msg type > 0\n");
+		printf("you must use msg type > 0\n");
 		exit(-1);
 	}
 	
@@ -202,13 +204,16 @@ int Lab_sys_msgsnd(int msg_type, int flag)
 
 void FreeMsg(struct msg_msg *msg)
 {
-	struct msg_msg *msg_h = NULL;
+	struct msg_msg *msg_h = R_msg;
+	
 	
 //	OneStringToProtocol("\t\tin FreeMsg");
-
-	msg_h = msg;
-	free(msg_h);
-	msg = msg->next;
+//      finding previous msg
+	if (msg_h!=msg)
+		while(msg_h->next!=msg)
+			msg_h=msg_h->next;
+	msg_h=msg->next;
+	free(msg);
 }
 
 int convert_mode(long msgtyp, int msgflg)
@@ -224,7 +229,7 @@ int convert_mode(long msgtyp, int msgflg)
 		return SEARCH_ANY;
 	if(msgtyp < 0)
 	{
-		msgtyp=-(msgtyp);
+		msgtyp=-(msgtyp);  //??????
 		return SEARCH_LESSEQUAL;
 	}
 	if(msgflg & MSG_EXCEPT)

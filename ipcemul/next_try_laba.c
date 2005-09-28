@@ -37,6 +37,7 @@ int main(int argc, char **argv)
 
 	TicTac();
 // process 1        
+	*timeptr=0;
 	if(fork_p(1,1,1,2) < 0)
         {
                 printf("cannot create proc\n");
@@ -104,7 +105,7 @@ int main(int argc, char **argv)
 //	TicTac();
 //	DtTime();
 
-	for (i = 0; i < 10; i++)
+	for (i = 0; i < 8; i++)
 	{	
 //		usleep(10);
 		scheduler();

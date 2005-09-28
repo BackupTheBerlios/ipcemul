@@ -138,16 +138,15 @@ int AddCode(int num,...)
 
 void RemoveCode(struct task *tsk)
 {
-	struct func *func_h = NULL;
-	
-	func_h = tsk->code;
-	free(func_h);
+	struct func *func_h = tsk->code;
 	tsk->code = tsk->code->next;
+	free(func_h);
 }
 
 int Add2proc_dscrptr(int msgid)
 {
 	struct descriptor *desc = NULL;
+	struct descriptor *dsc = current_proc->dscrptr;
 	
 	desc = (struct descriptor *)malloc(sizeof(struct descriptor));
 	if(desc == NULL)
@@ -155,12 +154,16 @@ int Add2proc_dscrptr(int msgid)
 		printf("cannot alloc mem\n");
 		return -1;
 	}
-	else
+	desc->descrptr = msgid;
+	desc->next = NULL;
+	if (current_proc->dscrptr==NULL)
 	{
-		desc->descrptr = msgid;
-		desc->next = NULL;
-		current_proc->dscrptr = desc;
+		current_proc->dscrptr=desc;
+		return 0;
 	}
+	while(dsc->next!=NULL)
+		dsc=dsc->next;
+	dsc= desc;
 	
 	return 0;
 }
