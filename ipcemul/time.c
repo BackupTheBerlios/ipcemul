@@ -104,6 +104,7 @@ void TicTac(void)
 //		}
 		while(1)
 		{
+			usleep(50);
 			(*timeptr)++;
 
 		}
@@ -112,6 +113,6 @@ void TicTac(void)
 
 void stop_TicTak(void)
 {
-	kill(SIGINT,pid);
+	kill(pid,9);
 	
 }
