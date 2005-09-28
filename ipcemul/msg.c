@@ -22,7 +22,6 @@
 #include <unistd.h>
 #include "msg.h"
 #include "fork.h"
-#include "protocol.h"
 #include "time.h"
  
 struct Lab_msg_queue *R_ipc = NULL;
@@ -39,20 +38,16 @@ struct Lab_msg_queue *Find_ipc_key(int key)
 {
 	struct Lab_msg_queue *ipc_k = R_ipc;
 	
-//	OneStringToProtocol("\t\tin Find_ipc_key");
-	
 	usleep(100);
 	while(ipc_k != NULL)
 	{
 		if (ipc_k->key == key)
 		{
-			OneStringToProtocol("\t\t\t return key");
 			return ipc_k;
 		}
 		ipc_k = ipc_k->next;
 	}
 	
-	OneStringToProtocol("\t\t\t return 0");
 	return NULL;
 }
 
@@ -152,7 +147,6 @@ int Lab_sys_msgrcv(long type, int flag)
 
 int testmsg(struct msg_msg* msg,long type,int mode)
 {
-	OneStringToProtocol("\t\tin testmsg");
 	switch(mode)
 	{
 		case SEARCH_ANY:
@@ -179,7 +173,6 @@ int Lab_sys_msgsnd(int msg_type, int flag)
 {
 	struct msg_msg *msg = NULL;
 	
-//	OneStringToProtocol("\t\tin Lab_sys_msgsnd");
 	if (msg_type < 0)
 	{
 		printf("you must use msg type > 0\n");
@@ -207,7 +200,6 @@ void FreeMsg(struct msg_msg *msg)
 	struct msg_msg *msg_h = R_msg;
 	
 	
-//	OneStringToProtocol("\t\tin FreeMsg");
 //      finding previous msg
 	if (msg_h!=msg)
 		while(msg_h->next!=msg)
@@ -224,7 +216,6 @@ int convert_mode(long msgtyp, int msgflg)
 	*  msgtyp > 0 => get first message of matching type.
 	*  msgtyp < 0 => get message with least type must be < abs(msgtype).  
 	*/
-//	OneStringToProtocol("\t\tin convert_mode");
 	if(msgtyp == 0)
 		return SEARCH_ANY;
 	if(msgtyp < 0)
@@ -243,18 +234,15 @@ struct Lab_msg_queue *FindQueue(int descriptor)
 {
 	struct Lab_msg_queue *que = R_ipc;
 	
-//	OneStringToProtocol("\t\tin FindQueue");
 	while(que != NULL)
 	{
 		if(que->msgid == descriptor)
 		{
-			OneStringToProtocol("\t\t\treturn descriptor");
 			return que;
 		}
 		que = que->next;
 	}
 	
-//	OneStringToProtocol("\t\t\tnot found");
 	usleep(100);
 	return NULL;
 }
