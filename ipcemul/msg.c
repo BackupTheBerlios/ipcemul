@@ -22,7 +22,6 @@
 #include <unistd.h>
 #include "msg.h"
 #include "fork.h"
-#include "time.h"
  
 struct Lab_msg_queue *R_ipc = NULL;
 

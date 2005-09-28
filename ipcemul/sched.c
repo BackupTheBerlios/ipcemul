@@ -21,7 +21,6 @@
 #include <stdlib.h>
 #include "fork.h"
 #include <unistd.h>
-#include "time.h"
 #include <time.h>
 
 extern struct task *root_task;
