@@ -32,8 +32,6 @@ struct msg_receiver *R_msg_r = NULL;
 
 extern struct task *current_proc;
 
-extern int *timeptr;
-
 struct Lab_msg_queue *Find_ipc_key(int key)
 {
 	struct Lab_msg_queue *ipc_k = R_ipc;
@@ -82,7 +80,7 @@ int Lab_sys_msgget(int key)
 	Add2proc_dscrptr(ipc_->msgid);
 
 	usleep(100);
-	printf("time create queue with key %d is %d\n", key, *timeptr);
+	//printf("time create queue with key %d is %d\n", key, *timeptr);
 	
 	return ipc_->msgid;
 }
@@ -190,7 +188,7 @@ int Lab_sys_msgsnd(int msg_type, int flag)
 	R_msg = msg;
 	
 	usleep(100);
-	printf("time send msg is %d\n", *timeptr);
+	//printf("time send msg is %d\n", *timeptr);
 	
 	return 0;
 }

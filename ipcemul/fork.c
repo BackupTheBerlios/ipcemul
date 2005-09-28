@@ -30,7 +30,7 @@ extern struct Lab_msg_queue *R_ipc;
 
 extern struct msg_receiver *R_msg_r; 
 
-extern int *timeptr;
+//extern int *timeptr;
 
 struct task *current_proc = NULL;
 
@@ -92,7 +92,7 @@ int fork_p(int pid, int uid, int gid, int prio)
     }
 
     usleep(50);
-    printf("time create process with pid %d is %d\n",pid, *timeptr);
+    //printf("time create process with pid %d is %d\n",pid, *timeptr);
     return 0;
 }
 

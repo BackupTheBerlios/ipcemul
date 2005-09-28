@@ -27,16 +27,13 @@
 #include "fork.h"
 #include "msg.h"
 
-extern int *timeptr;
 extern int pid;
 
 int main(int argc, char **argv)
 {
         int i;
 
-	TicTac();
 // process 1        
-	*timeptr=0;
 	if(fork_p(1,1,1,2) < 0)
         {
                 printf("cannot create proc\n");
@@ -105,8 +102,6 @@ int main(int argc, char **argv)
 		scheduler();
 	}
 	
-	stop_TicTak();
-
 //	waitpid(pid, NULL, 0);
 
         return 0;
