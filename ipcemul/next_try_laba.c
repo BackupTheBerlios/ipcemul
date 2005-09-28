@@ -23,7 +23,6 @@
 #include <unistd.h>
 #include <signal.h>
 #include "sched.h"
-#include "protocol.h"
 #include "time.h"
 #include "fork.h"
 #include "msg.h"
@@ -101,17 +100,9 @@ int main(int argc, char **argv)
         }
 
 
-//	RcvTime();
-//	TicTac();
-//	DtTime();
-
 	for (i = 0; i < 8; i++)
 	{	
-//		usleep(10);
 		scheduler();
-//		RcvTime();
-//		printf("\n   time = %d\n",*timeptr1);
-//		DtTime();
 	}
 	
 	stop_TicTak();
