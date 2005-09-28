@@ -27,7 +27,7 @@ int nr_running = 0;
 
 extern struct Lab_msg_queue *R_ipc;
 
-extern struct msg_receiver *R_msg_r; 
+extern struct msg_receiver *root_msg_wait_receive; 
 
 //extern int *timeptr;
 
@@ -223,9 +223,9 @@ struct task *Find_max_prio(void)
         while(list != NULL)
         {
             //I don't now what this thing have to do but without this thing prog works
-            /*if(R_msg_r != NULL)
+            /*if(root_msg_wait_receive != NULL)
               {
-              if(list->pid == R_msg_r->r_tsk->pid)
+              if(list->pid == root_msg_wait_receive->r_tsk->pid)
               ;
               }
               else*/
