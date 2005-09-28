@@ -68,7 +68,7 @@ int scheduler(void)
                 printf("Error getting time\n");
     
     printf("end work task with pid %d at time %e\n",tsk->pid, ((int)(timevalue->tv_sec))*1000000000.0+((int)(timevalue->tv_nsec)));
-    printf("time in work is %e\n\n",((int)(timevalue->tv_sec))*1000000000.0+((int)(timevalue->tv_nsec))-begin);
+    printf("time in work is %d\n\n",(int)(((int)(timevalue->tv_sec))*1000000000.0+((int)(timevalue->tv_nsec))-begin));
 
     return 0;
 }
