@@ -22,7 +22,6 @@
 #include <unistd.h>
 #include "fork.h"
 #include "msg.h"
-#include "protocol.h"
 #include "time.h"
 
 int nr_running = 0;
