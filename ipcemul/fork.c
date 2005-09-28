@@ -223,12 +223,13 @@ struct task *Find_max_prio(void)
 	{
 		while(list != NULL)
 		{
-			if(R_msg_r != NULL)
+			//I don't now what this thing have to do but without this thing prog works
+			/*if(R_msg_r != NULL)
 			{
 				if(list->pid == R_msg_r->r_tsk->pid)
 					;
 			}
-			else
+			else*/
 			{
 				list->runned = 0;
 				nr_running++;
