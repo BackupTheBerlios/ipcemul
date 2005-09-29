@@ -27,12 +27,16 @@ extern struct task *root_task;
 extern struct task *current_proc;
 //extern int *timeptr;
 
+double time_substr(struct timespec x1,struct timespec x2)
+{
+	return (double)(((x2.tv_sec-x1.tv_sec))*1000000000.0+((x2.tv_nsec-x1.tv_nsec)));
+}
+
 int scheduler(void)
 {
-    struct timespec *timevalue;
+    struct timespec *timevalue ,*begin;
     struct task *tsk_add_time = root_task;
     struct task *tsk;
-    long begin;
 
     timevalue = (struct timespec *)malloc(sizeof(struct timespec));
 
@@ -40,13 +44,11 @@ int scheduler(void)
 
     current_proc = tsk;
 
-    usleep(300);
     
-    if (clock_gettime(CLOCK_REALTIME, timevalue)!=0)
+    if (clock_gettime(CLOCK_REALTIME, begin)!=0)
         printf("Error getting time\n");
     
-    begin=((int)(timevalue->tv_sec))*1000000000.0+((int)(timevalue->tv_nsec));
-    printf("\nbegin work task with pid %d at time %e\n",tsk->pid, (double)begin);
+    printf("\nbegin work task with pid %d\n",tsk->pid);
 
     if(tsk->code == NULL)
     {
@@ -66,8 +68,14 @@ int scheduler(void)
     if (clock_gettime(CLOCK_REALTIME, timevalue)!=0)
                 printf("Error getting time\n");
     
-    printf("end work task with pid %d at time %e\n",tsk->pid, ((int)(timevalue->tv_sec))*1000000000.0+((int)(timevalue->tv_nsec)));
-    printf("time in work is %d\n\n",(int)(((int)(timevalue->tv_sec))*1000000000.0+((int)(timevalue->tv_nsec))-begin));
+    printf("end work task with pid %d\n",tsk->pid);
+
+clock_gettime(CLOCK_REALTIME, begin);
+
+    
+    printf("end work task with pid %d\n",tsk->pid);
+
+    printf("time in work is %18.0f\n\n",time_substr(*timevalue,*begin));
 
     return 0;
 }

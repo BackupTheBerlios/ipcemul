@@ -50,5 +50,5 @@ int Lab_msgrcv(int msg_type, long msg_flag);
 int Lab_sys_msgrcv(long type, int flag);
 int Lab_sys_msgsnd(int msg_type, int flag);
 int Lab_sys_msgget(int key);
-int convert_mode(long msgtyp, int msgflg);
+int convert_mode(long *msgtyp, int msgflg);
 int testmsg(struct msg_msg* msg,long type,int mode);

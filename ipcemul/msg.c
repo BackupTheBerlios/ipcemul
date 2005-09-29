@@ -35,7 +35,6 @@ struct Lab_msg_queue *Find_ipc_key(int key)
 {
 	struct Lab_msg_queue *ipc_k = R_ipc;
 	
-	usleep(100);
 	while(ipc_k != NULL)
 	{
 		if (ipc_k->key == key)
@@ -78,7 +77,6 @@ int Lab_sys_msgget(int key)
 	
 	Add2proc_dscrptr(ipc_->msgid);
 
-	usleep(100);
 	//printf("time create queue with key %d is %d\n", key, *timeptr);
 	
 	return ipc_->msgid;
@@ -94,7 +92,7 @@ int Lab_sys_msgrcv(long type, int flag)
 	int result;
 	struct task *tsk = current_proc;
 	
-	mode = convert_mode(type, flag);
+	mode = convert_mode(&type, flag);
 
 	queue = FindQueue(tsk->dscrptr->descrptr);
 	if(queue == NULL)
@@ -138,7 +136,6 @@ int Lab_sys_msgrcv(long type, int flag)
 		FreeMsg(msg);
 	}
 	
-	usleep(50);
 	return 0;
 }
 
@@ -162,7 +159,6 @@ int testmsg(struct msg_msg* msg,long type,int mode)
 			break;
 	}
 	
-	usleep(50);
 	return 0;
 }
 
@@ -186,7 +182,7 @@ int Lab_sys_msgsnd(int msg_type, int flag)
 	msg->next = R_msg;
 	R_msg = msg;
 	
-	usleep(100);
+
 	//printf("time send msg is %d\n", *timeptr);
 	
 	return 0;
@@ -205,7 +201,7 @@ void FreeMsg(struct msg_msg *msg)
 	free(msg);
 }
 
-int convert_mode(long msgtyp, int msgflg)
+int convert_mode(long* msgtyp, int msgflg)
 {
 	/* 
 	*  find message of correct type.
@@ -213,17 +209,16 @@ int convert_mode(long msgtyp, int msgflg)
 	*  msgtyp > 0 => get first message of matching type.
 	*  msgtyp < 0 => get message with least type must be < abs(msgtype).  
 	*/
-	if(msgtyp == 0)
+	if((*msgtyp) == 0)
 		return SEARCH_ANY;
-	if(msgtyp < 0)
+	if((*msgtyp) < 0)
 	{
-		msgtyp=-(msgtyp);  //??????
+		(*msgtyp)*=-1;
 		return SEARCH_LESSEQUAL;
 	}
 	if(msgflg & MSG_EXCEPT)
 		return SEARCH_NOTEQUAL;
 	
-	usleep(20);
 	return SEARCH_EQUAL;
 }
 
@@ -240,24 +235,20 @@ struct Lab_msg_queue *FindQueue(int descriptor)
 		que = que->next;
 	}
 	
-	usleep(100);
 	return NULL;
 }
 
 int Lab_msgget(int key)
 {
-	usleep(200);
 	return AddCode(2,2,key);
 }
 
 int Lab_msgsnd(long msg_type, int msg_flag)
 {
-	usleep(200);
 	return AddCode(3,0, msg_type, msg_flag);
 }
 
 int Lab_msgrcv(int msg_type, long msg_flag)
 {
-	usleep(200);
 	return AddCode(3,1, msg_type, msg_flag);
 }
