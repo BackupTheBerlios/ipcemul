@@ -25,7 +25,7 @@
  
 struct Lab_msg_queue *R_ipc = NULL;
 
-struct msg_msg *R_msg = NULL;
+struct msg_msg *root_msg_msg = NULL;
 
 struct msg_receiver *root_msg_reciever = NULL;
 
@@ -86,7 +86,7 @@ int Lab_sys_msgrcv(long type, int flag)
 {
 	int mode;
 	struct Lab_msg_queue *queue = NULL;
-	struct msg_msg *msg = R_msg;
+	struct msg_msg *msg = root_msg_msg;
 //	struct list_head *list = NULL;
 	struct msg_receiver *msg_r;
 	int result;
@@ -179,8 +179,8 @@ int Lab_sys_msgsnd(int msg_type, int flag)
 		return -1;
 	}
 	msg->m_type = msg_type;
-	msg->next = R_msg;
-	R_msg = msg;
+	msg->next = root_msg_msg;
+	root_msg_msg = msg;
 	
 
 	//printf("time send msg is %d\n", *timeptr);
@@ -190,7 +190,7 @@ int Lab_sys_msgsnd(int msg_type, int flag)
 
 void FreeMsg(struct msg_msg *msg)
 {
-	struct msg_msg *msg_h = R_msg;
+	struct msg_msg *msg_h = root_msg_msg;
 	
 	
 //      finding previous msg
