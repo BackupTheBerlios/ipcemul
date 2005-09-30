@@ -34,18 +34,16 @@ double time_substr(struct timespec x1,struct timespec x2)
 
 int scheduler(void)
 {
-    struct timespec *timevalue ,*begin;
+    struct timespec timevalue ,begin;
     struct task *tsk_add_time = root_task;
     struct task *tsk;
-
-    timevalue = (struct timespec *)malloc(sizeof(struct timespec));
 
     tsk = Find_max_prio();
 
     current_proc = tsk;
 
     
-    if (clock_gettime(CLOCK_REALTIME, begin)!=0)
+    if (clock_gettime(CLOCK_REALTIME, &begin)!=0)
         printf("Error getting time\n");
     
     printf("\nbegin work task with pid %d\n",tsk->pid);
@@ -65,17 +63,13 @@ int scheduler(void)
         tsk_add_time = tsk_add_time->next;
     }
 
-    if (clock_gettime(CLOCK_REALTIME, timevalue)!=0)
+    if (clock_gettime(CLOCK_REALTIME, &timevalue)!=0)
                 printf("Error getting time\n");
-    
-    printf("end work task with pid %d\n",tsk->pid);
-
-clock_gettime(CLOCK_REALTIME, begin);
 
     
     printf("end work task with pid %d\n",tsk->pid);
 
-    printf("time in work is %18.0f\n\n",time_substr(*timevalue,*begin));
+    printf("time in work is %18.0f\n\n",time_substr(begin,timevalue));
 
     return 0;
 }
