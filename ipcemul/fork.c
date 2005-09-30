@@ -29,8 +29,6 @@ extern struct Lab_msg_queue *R_ipc;
 
 extern struct msg_receiver *root_msg_wait_receive; 
 
-//extern int *timeptr;
-
 struct task *current_proc = NULL;
 
 struct task *root_task = NULL;

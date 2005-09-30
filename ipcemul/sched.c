@@ -22,31 +22,24 @@
 #include "fork.h"
 #include <unistd.h>
 #include <time.h>
-
+#include "time.h"
 extern struct task *root_task;
 extern struct task *current_proc;
-//extern int *timeptr;
-
-double time_substr(struct timespec x1,struct timespec x2)
-{
-	return (double)(((x2.tv_sec-x1.tv_sec))*1000000000.0+((x2.tv_nsec-x1.tv_nsec)));
-}
-
+struct timespec *NULL_time;
 int scheduler(void)
 {
-    struct timespec timevalue ,begin;
+    struct timespec timevalue ,begin ;
     struct task *tsk_add_time = root_task;
     struct task *tsk;
 
     tsk = Find_max_prio();
 
     current_proc = tsk;
-
     
-    if (clock_gettime(CLOCK_REALTIME, &begin)!=0)
-        printf("Error getting time\n");
+    if (clock_gettime(CLOCK_THREAD_CPUTIME_ID, &begin)!=0)
+	printf("Error getting time\n");
     
-    printf("\nbegin work task with pid %d\n",tsk->pid);
+    printf("\nbegin work task with pid %d  at %9.2f\n",tsk->pid,time_substr(*NULL_time,begin));
 
     if(tsk->code == NULL)
     {
@@ -63,13 +56,13 @@ int scheduler(void)
         tsk_add_time = tsk_add_time->next;
     }
 
-    if (clock_gettime(CLOCK_REALTIME, &timevalue)!=0)
+    if (clock_gettime(CLOCK_THREAD_CPUTIME_ID, &timevalue)!=0)
                 printf("Error getting time\n");
 
     
-    printf("end work task with pid %d\n",tsk->pid);
+    printf("end work task with pid %d at %9.2f \n",tsk->pid,time_substr(*NULL_time,timevalue));
 
-    printf("time in work is %18.0f\n\n",time_substr(begin,timevalue));
+    printf("time in work is %9.2f mcsec\n\n",time_substr(begin,timevalue));
 
     return 0;
 }

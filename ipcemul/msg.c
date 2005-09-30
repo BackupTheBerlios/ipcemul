@@ -131,7 +131,7 @@ int Lab_sys_msgrcv(long type, int flag)
 	}
 	else
 	{
-		printf("\nfound msg on time %d\n", tsk->run_time);
+		printf("\nfound msg on time %d\n", tsk->run_time);  ////!!!!!!!!!!!!!!!!!!!!!!!!!
 		printf("rcv msg\n");
 		FreeMsg(msg);
 	}

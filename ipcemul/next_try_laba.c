@@ -25,13 +25,14 @@
 #include "sched.h"
 #include "fork.h"
 #include "msg.h"
-
+#include <time.h>
+#include "time.h"
 extern int pid;
-
+extern struct timespec *NULL_time;
 int main(int argc, char **argv)
 {
         int i;
-
+	init_time();
 // process 1        
 	if(fork_p(1,1,1,2) < 0)
         {
