@@ -25,7 +25,7 @@
 
 int nr_running = 0;
 
-extern struct Lab_msg_queue *R_ipc;
+extern struct Lab_msg_queue *root_msg_queue;
 
 extern struct msg_receiver *root_msg_reciever; 
 

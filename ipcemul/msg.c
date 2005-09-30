@@ -23,7 +23,7 @@
 #include "msg.h"
 #include "fork.h"
  
-struct Lab_msg_queue *R_ipc = NULL;
+struct Lab_msg_queue *root_msg_queue = NULL;
 
 struct msg_msg *root_msg_msg = NULL;
 
@@ -33,7 +33,7 @@ extern struct task *current_proc;
 
 struct Lab_msg_queue *Find_ipc_key(int key)
 {
-	struct Lab_msg_queue *ipc_k = R_ipc;
+	struct Lab_msg_queue *ipc_k = root_msg_queue;
 	
 	while(ipc_k != NULL)
 	{
@@ -65,8 +65,8 @@ int Lab_sys_msgget(int key)
 //		ipc_->q_receivers = NULL;
 //		ipc_->q_senders = NULL;
 		ipc_->msgid = 1+(int) (10.0*rand()/(RAND_MAX+1.0));
-		ipc_->next = R_ipc;
-		R_ipc = ipc_;
+		ipc_->next = root_msg_queue;
+		root_msg_queue = ipc_;
 	}
 	else
 	{
@@ -224,7 +224,7 @@ int convert_mode(long* msgtyp, int msgflg)
 
 struct Lab_msg_queue *FindQueue(int descriptor)
 {
-	struct Lab_msg_queue *que = R_ipc;
+	struct Lab_msg_queue *que = root_msg_queue;
 	
 	while(que != NULL)
 	{
