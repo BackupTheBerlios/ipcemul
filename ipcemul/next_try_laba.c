@@ -25,7 +25,6 @@
 #include "sched.h"
 #include "fork.h"
 #include "msg.h"
-#include <time.h>
 #include "time.h"
 extern int pid;
 extern struct timespec *NULL_time;
