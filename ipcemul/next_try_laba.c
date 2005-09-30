@@ -26,82 +26,89 @@
 #include "fork.h"
 #include "msg.h"
 #include "time.h"
+
 extern int pid;
+
 extern struct timespec *NULL_time;
+
 int main(int argc, char **argv)
 {
-        int i;
-	init_time();
-// process 1        
-	if(fork_p(1,1,1,2) < 0)
-        {
-                printf("cannot create proc\n");
-                return -1;
-        }
-        if(Lab_msgget(1) < 0)
-        {
-                printf("mistake in msgget\n");
-                return -1;
-        }
-        if(Lab_msgrcv(1,0) < 0)
-        {
-                printf("mistake in msgsnd\n");
-                return -1;
-        }
+    int i;
+    
+    /* Getting initial time. All other echoed times is just subtraction result.
+       So we have allways small digits. Time is written to global structure NULL_time. */
+    init_time();
 
-//process 2        
-	if(fork_p(2,1,1,1) < 0)
-        {
-                printf("cannot create proc\n");
-                return -1;
-        }
-        if(Lab_msgget(1) < 0)
-        {
-                printf("mistake in msgget\n");
-                return -1;
-        }
-        if(Lab_msgsnd(1,0) < 0)
-        {
-                printf("mistake in msgrcv\n");
-                return -1;
-        }
-	if(Lab_msgsnd(2,0) < 0)
-        {
-                printf("mistake in msgrcv\n");
-                return -1;
-        }
-	
-//process 3
-	if(fork_p(3,1,1,2) < 0)
-        {
-                printf("cannot create proc\n");
-                return -1;
-        }
-        if(Lab_msgget(1) < 0)
-        {
-                printf("mistake in msgget\n");
-                return -1;
-        }
-        if(Lab_msgrcv(1,0) < 0)
-        {
-                printf("mistake in msgsnd\n");
-                return -1;
-        }
+    // process 1        
+    if(fork_p(1,1,1,2) < 0)
+    {
+        printf("cannot create proc\n");
+        return -1;
+    }
+    if(Lab_msgget(1) < 0)
+    {
+        printf("mistake in msgget\n");
+        return -1;
+    }
+    if(Lab_msgrcv(1,0) < 0)
+    {
+        printf("mistake in msgsnd\n");
+        return -1;
+    }
 
-//process 4
-	if(fork_p(4,1,1,5) < 0)
-        {
-                printf("cannot create proc\n");
-                return -1;
-        }
+    //process 2        
+    if(fork_p(2,1,1,1) < 0)
+    {
+        printf("cannot create proc\n");
+        return -1;
+    }
+    if(Lab_msgget(1) < 0)
+    {
+        printf("mistake in msgget\n");
+        return -1;
+    }
+    if(Lab_msgsnd(1,0) < 0)
+    {
+        printf("mistake in msgrcv\n");
+        return -1;
+    }
+    if(Lab_msgsnd(2,0) < 0)
+    {
+        printf("mistake in msgrcv\n");
+        return -1;
+    }
+
+    //process 3
+    if(fork_p(3,1,1,2) < 0)
+    {
+        printf("cannot create proc\n");
+        return -1;
+    }
+    if(Lab_msgget(1) < 0)
+    {
+        printf("mistake in msgget\n");
+        return -1;
+    }
+    if(Lab_msgrcv(1,0) < 0)
+    {
+        printf("mistake in msgsnd\n");
+        return -1;
+    }
+
+    //process 4
+    if(fork_p(4,1,1,5) < 0)
+    {
+        printf("cannot create proc\n");
+        return -1;
+    }
 
 
-	for (i = 0; i < 10; i++)
-	{	
-		scheduler();
-	}
-	
-//	waitpid(pid, NULL, 0);
+    for (i = 0; i < 10; i++)
+    {	
+        scheduler();
+    }
 
-        return 0;
+    //	waitpid(pid, NULL, 0);
+
+    return 0;
 }
