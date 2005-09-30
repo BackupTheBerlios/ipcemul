@@ -25,7 +25,7 @@
 #include "time.h"
 extern struct task *root_task;
 extern struct task *current_proc;
-struct timespec *NULL_time;
+extern struct timespec *NULL_time;
 int scheduler(void)
 {
     struct timespec timevalue ,begin ;
