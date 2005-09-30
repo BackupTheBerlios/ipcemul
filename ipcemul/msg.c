@@ -24,62 +24,60 @@
 #include "fork.h"
  
 struct Lab_msg_queue *root_msg_queue = NULL;
-
 struct msg_msg *root_msg_msg = NULL;
-
 struct msg_receiver *root_msg_reciever = NULL;
 
 extern struct task *current_proc;
 
 struct Lab_msg_queue *Find_ipc_key(int key)
 {
-	struct Lab_msg_queue *ipc_k = root_msg_queue;
-	
-	while(ipc_k != NULL)
-	{
-		if (ipc_k->key == key)
-		{
-			return ipc_k;
-		}
-		ipc_k = ipc_k->next;
-	}
-	
-	return NULL;
+    struct Lab_msg_queue *ipc_k = root_msg_queue;
+
+    while(ipc_k != NULL)
+    {
+        if (ipc_k->key == key)
+        {
+            return ipc_k;
+        }
+        ipc_k = ipc_k->next;
+    }
+
+    return NULL;
 }
 
 int Lab_sys_msgget(int key)
 {
-	struct Lab_msg_queue *ipc_ = NULL;
-	
-	ipc_ = Find_ipc_key(key);
-	if(ipc_ == NULL)
-	{
-		ipc_ = (struct Lab_msg_queue *)malloc(sizeof(struct Lab_msg_queue));
-		if(ipc_ == NULL)
-		{
-			printf("cannot alloc mem\n");
-			return -1;
-		}
-		
-		ipc_->key = key;
-//		ipc_->q_receivers = NULL;
-//		ipc_->q_senders = NULL;
-		ipc_->msgid = 1+(int) (10.0*rand()/(RAND_MAX+1.0));
-		ipc_->next = root_msg_queue;
-		root_msg_queue = ipc_;
-	}
-	else
-	{
-		Add2proc_dscrptr(ipc_->msgid);
-		printf("queue already exist\n");
-		return ipc_->msgid;
-	}
-	
-	Add2proc_dscrptr(ipc_->msgid);
+    struct Lab_msg_queue *ipc_ = NULL;
 
-	//printf("time create queue with key %d is %d\n", key, *timeptr);
-	
-	return ipc_->msgid;
+    ipc_ = Find_ipc_key(key);
+    if(ipc_ == NULL)
+    {
+        ipc_ = (struct Lab_msg_queue *)malloc(sizeof(struct Lab_msg_queue));
+        if(ipc_ == NULL)
+        {
+            printf("cannot alloc mem\n");
+            return -1;
+        }
+
+        ipc_->key = key;
+        //		ipc_->q_receivers = NULL;
+        //		ipc_->q_senders = NULL;
+        ipc_->msgid = 1+(int) (10.0*rand()/(RAND_MAX+1.0));
+        ipc_->next = root_msg_queue;
+        root_msg_queue = ipc_;
+    }
+    else
+    {
+        Add2proc_dscrptr(ipc_->msgid);
+        printf("queue already exist\n");
+        return ipc_->msgid;
+    }
+
+    Add2proc_dscrptr(ipc_->msgid);
+
+    //printf("time create queue with key %d is %d\n", key, *timeptr);
+
+    return ipc_->msgid;
 }
 
 int Lab_sys_msgrcv(long type, int flag)
