@@ -27,7 +27,7 @@ struct Lab_msg_queue *R_ipc = NULL;
 
 struct msg_msg *R_msg = NULL;
 
-struct msg_receiver *root_msg_wait_receive = NULL;
+struct msg_receiver *root_msg_reciever = NULL;
 
 extern struct task *current_proc;
 
@@ -125,8 +125,8 @@ int Lab_sys_msgrcv(long type, int flag)
 		msg_r->r_tsk = current_proc;
 		msg_r->r_mode = mode;
 		msg_r->r_msgtype = current_proc->code->param[1];
-		msg_r->next = root_msg_wait_receive;
-		root_msg_wait_receive = msg_r;
+		msg_r->next = root_msg_reciever;
+		root_msg_reciever = msg_r;
 		return 1;
 	}
 	else
