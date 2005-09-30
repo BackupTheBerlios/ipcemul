@@ -17,21 +17,23 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
+/* one msq_queue structure for each present queue on the system */
 struct Lab_msg_queue
 {
-        int key;
-	
-	int msgid;
-	
-	struct Lab_msg_queue *next;
+    int key;
+    int msgid;
+    struct Lab_msg_queue *next;
 };
 
+/* one msg_msg structure for each message */
 struct msg_msg
 {
-         struct msg_msg *next; 
-         long  m_type;
+    struct msg_msg *next; 
+    long  m_type;
 };
 
+/* one msg_receiver structure for each sleeping receiver */
 struct msg_receiver
 {
 	struct msg_receiver *next;
