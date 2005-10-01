@@ -243,10 +243,10 @@ int Lab_msgget(int key)
 
 int Lab_msgsnd(long msg_type, int msg_flag)
 {
-	return AddCode(3,0, msg_type, msg_flag);
+	return AddCode(3,MSGSND, msg_type, msg_flag);
 }
 
 int Lab_msgrcv(int msg_type, long msg_flag)
 {
-	return AddCode(3,1, msg_type, msg_flag);
+	return AddCode(3,MSGRCV, msg_type, msg_flag);
 }
