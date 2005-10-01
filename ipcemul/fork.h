@@ -17,6 +17,10 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#define MSGSND 0
+#define MSGRCV 1
+#define MSGGET 2
+
 struct func
 {
 	int func; //0 msgsnd, 1 msgrcv, 2 msgget
@@ -31,6 +35,7 @@ struct descriptor
 	struct descriptor *next;
 };
 
+/* Structure for the process */
 struct task
 {
 	int pid;

@@ -238,7 +238,7 @@ struct Lab_msg_queue *FindQueue(int descriptor)
 
 int Lab_msgget(int key)
 {
-	return AddCode(2,2,key);
+	return AddCode(2,MSGGET,key);
 }
 
 int Lab_msgsnd(long msg_type, int msg_flag)
