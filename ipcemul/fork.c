@@ -114,7 +114,7 @@ int AddCode(int num,...)
     for (i=1;i<num;i++)
         function->param[i]=*(++pp);
     function->next = NULL;
-
+	//adding new function at the end of stack
     add_code = tsk->code;
     while (add_code != NULL)
     {
@@ -125,6 +125,7 @@ int AddCode(int num,...)
         }
         add_code = add_code->next;
     }
+	//if there are no functions this will be the first
     tsk->code = function;
 
     return 0;
@@ -158,7 +159,7 @@ desc = (struct descriptor *)malloc(sizeof(struct descriptor));
     }
     while(dsc->next!=NULL)
         dsc=dsc->next;
-    dsc= desc;
+    dsc->next= desc;
 
     return 0;
 }
@@ -213,7 +214,10 @@ struct task *Find_max_prio(void)
     struct task *max_tsk = NULL;
     int max = -1;
     struct task *list = root_task;
-
+	/*if there are no runned processes 
+	   it will bring them up
+	   and  count them
+	*/
     if(nr_running == 0)
     {
         while(list != NULL)
@@ -234,6 +238,8 @@ struct task *Find_max_prio(void)
     }
 
     list = root_task;
+
+	//finding process with max prio
 
     while(list != NULL)
     {
