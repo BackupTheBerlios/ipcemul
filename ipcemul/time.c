@@ -24,3 +24,9 @@ double time_substr(struct timespec x1,struct timespec x2)
 {
 	return (double)((((x2.tv_sec-x1.tv_sec))*1000000000.0+((x2.tv_nsec-x1.tv_nsec)))/1000);
 }
+
+void time_msg()
+{
+
+}
+

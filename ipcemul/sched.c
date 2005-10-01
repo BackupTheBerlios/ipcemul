@@ -49,13 +49,13 @@ int scheduler(void)
     {
         ExecCode(tsk);
     }
-
-    while(tsk_add_time != NULL)
+//temporary not used, it need to be updated
+  /*  while(tsk_add_time != NULL)
     {
         tsk_add_time->run_time+=1;
         tsk_add_time = tsk_add_time->next;
     }
-
+*/
     if (clock_gettime(CLOCK_THREAD_CPUTIME_ID, &timevalue)!=0)
                 printf("Error getting time\n");
 

@@ -37,7 +37,6 @@ struct task *Find_task(int pid)
 {
     struct task *tsk = root_task;
 
-    usleep(50);
     while(tsk != NULL)
     {
         if (tsk->pid == pid)
@@ -88,7 +87,6 @@ int fork_p(int pid, int uid, int gid, int prio)
         printf("we have process with pid = %d\n",pid);
     }
 
-    usleep(50);
     //printf("time create process with pid %d is %d\n",pid, *timeptr);
     return 0;
 }
@@ -143,16 +141,6 @@ int Add2proc_dscrptr(int msgid)
 {
     struct descriptor *desc = NULL;
     struct descriptor *dsc = current_proc->dscrptr;
-
-    while(dsc!=NULL)
-    {
-	printf("I'm here =))");
-	if(dsc->descrptr==msgid)
-		return 0;
-
-    }
-
-    dsc = current_proc->dscrptr;
 
 
 desc = (struct descriptor *)malloc(sizeof(struct descriptor));
@@ -216,7 +204,6 @@ int ExecCode(struct task *tsk)
     else
         return -1;
 
-    usleep(100);
 
     return 0;
 }
