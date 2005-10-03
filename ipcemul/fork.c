@@ -29,19 +29,19 @@ extern struct Lab_msg_queue *root_msg_queue;
 
 extern struct msg_receiver *root_msg_reciever; 
 
-struct task *current_proc = NULL;
+struct process *current_proc = NULL;
 
-struct task *root_task = NULL;
+struct process *root_process = NULL;
 
-struct task *Find_task(int pid)
+struct process *Find_process(int pid)
 {
-    struct task *tsk = root_task;
+    struct process *prc = root_process;
 
-    while(tsk != NULL)
+    while(prc != NULL)
     {
-        if (tsk->pid == pid)
-            return tsk;
-        tsk = tsk->next;
+        if (prc->pid == pid)
+            return prc;
+        prc = prc->next;
     }
 
     return NULL;
@@ -49,41 +49,41 @@ struct task *Find_task(int pid)
 
 int fork_p(int pid, int uid, int gid, int prio)
 {
-    struct task *tsk = NULL;
+    struct process *prc = NULL;
 
-    tsk = Find_task(pid);
-    if(tsk == NULL)
+    prc = Find_process(pid);
+    if(NULL==prc)
     {
-        tsk = (struct task *)malloc(sizeof(struct task));
-        if(tsk == NULL)
+        prc = (struct process *)malloc(sizeof(struct process));
+        if(NULL==prc)
         {
             printf("cannot alloc mem\n");
             return -1;
         }
-        tsk->dscrptr = NULL;
-        tsk->code = NULL;
-        tsk->pid = pid;
-        tsk->uid = uid;
-        tsk->gid = gid;
-        tsk->prio = prio;
-        tsk->runned = 0;
-        tsk->run_time = 0;
-        tsk->search_msg = 0;
+        prc->dscrptr = NULL;
+        prc->code = NULL;
+        prc->pid = pid;
+        prc->uid = uid;
+        prc->gid = gid;
+        prc->prio = prio;
+        prc->runned = 0;
+        prc->run_time = 0;
+        prc->search_msg = 0;
 
-        /* New task is situated before first task (stack) */
-        tsk->next = root_task;
+        /* New process is situated before first process (stack) */
+        prc->next = root_process;
 
-        /* New task becomes the first task */
-        root_task = tsk;
+        /* New process becomes the first process */
+        root_process = prc;
 
         nr_running++;
 
-        /* New task becomes the current task */
-        current_proc = tsk;
+        /* New process becomes the current process */
+        current_proc = prc;
     }
     else
     {
-        printf("func fork: ");
+        printf("tsk fork: ");
         printf("we have process with pid = %d\n",pid);
     }
 
@@ -95,47 +95,47 @@ int AddCode(int num,...)
 {
     int i;
     int *pp = &num;
-    struct task *tsk = NULL;
-    struct func *function = NULL;
-    struct func *add_code = NULL; 
+    struct process *prc = NULL;
+    struct tsk *task = NULL;
+    struct tsk *tsk_temp = NULL; 
 
-    function = (struct func *)malloc(sizeof(struct func));
-    if(function == NULL)
+    task = (struct tsk *)malloc(sizeof(struct tsk));
+    if(task == NULL)
     {
         printf("cannot alloc mem\n");
         return -1;
     }
 
-    //tsk = Find_task(*(++pp));
-    tsk = current_proc;
+    //prc = Find_process(*(++pp));
+    prc = current_proc;
 
-    function->func = *(++pp);
-    function->num_param = num - 1;
+    task->tsk = *(++pp);
+    task->num_param = num - 1;
     for (i=1;i<num;i++)
-        function->param[i]=*(++pp);
-    function->next = NULL;
-	//adding new function at the end of stack
-    add_code = tsk->code;
-    while (add_code != NULL)
+        task->param[i]=*(++pp);
+    task->next = NULL;
+	//adding new task at the end of stack
+    tsk_temp = prc->code;
+    while (tsk_temp != NULL)
     {
-        if(add_code->next == NULL)
+        if(tsk_temp->next == NULL)
         {
-            add_code->next = function;
+            tsk_temp->next = task;
             return 0;
         }
-        add_code = add_code->next;
+        tsk_temp = tsk_temp->next;
     }
-	//if there are no functions this will be the first
-    tsk->code = function;
+	//if there are no tasks this will be the first
+    prc->code = task;
 
     return 0;
 }
 
-void RemoveCode(struct task *tsk)
+void RemoveCode(struct process *prc)
 {
-    struct func *func_h = tsk->code;
-    tsk->code = tsk->code->next;
-    free(func_h);
+    struct tsk *tsk_h = prc->code;
+    prc->code = prc->code->next;
+    free(tsk_h);
 }
 
 int Add2proc_dscrptr(int msgid)
@@ -152,6 +152,7 @@ desc = (struct descriptor *)malloc(sizeof(struct descriptor));
     }
     desc->descrptr = msgid;
     desc->next = NULL;
+
     if (current_proc->dscrptr==NULL)
     {
         current_proc->dscrptr=desc;
@@ -164,24 +165,24 @@ desc = (struct descriptor *)malloc(sizeof(struct descriptor));
     return 0;
 }
 
-int ExecCode(struct task *tsk)
+int ExecCode(struct process *prc)
 {
     int result;
 
     //	OneStringToProtocol("\tin ExecCode");
-    if(tsk->code->func == 0)
+    if(prc->code->tsk == 0)
     {
-        result = Lab_sys_msgsnd(tsk->code->param[1], tsk->code->param[2]);
+        result = Lab_sys_msgsnd(prc->code->param[1], prc->code->param[2]);
         if(result < 0)
         {
             printf("mistake in msgrcv\n");
             return -1;
         }
-        RemoveCode(tsk);
+        RemoveCode(prc);
     }
-    else if(tsk->code->func == 1)
+    else if(prc->code->tsk == 1)
     {
-        result = Lab_sys_msgrcv(tsk->code->param[1], tsk->code->param[2]);
+        result = Lab_sys_msgrcv(prc->code->param[1], prc->code->param[2]);
         if(result < 0)
         {
             printf("mistake in msgrcv\n");
@@ -190,17 +191,17 @@ int ExecCode(struct task *tsk)
         else if (result == 1)
             ;
         else
-            RemoveCode(tsk);
+            RemoveCode(prc);
     }
-    else if(tsk->code->func == 2)
+    else if(prc->code->tsk == 2)
     {
-        if (Lab_sys_msgget(tsk->code->param[1]) < 0)
+        if (Lab_sys_msgget(prc->code->param[1]) < 0)
         {
             printf("mistake in msgget\n");
             return -1;
         }
-        tsk->dscrptr = current_proc->dscrptr;
-        RemoveCode(tsk);
+        prc->dscrptr = current_proc->dscrptr; //????? what this means?????
+        RemoveCode(prc);
     }
     else
         return -1;
@@ -209,11 +210,11 @@ int ExecCode(struct task *tsk)
     return 0;
 }
 
-struct task *Find_max_prio(void)
+struct process *Find_max_prio(void)
 {
-    struct task *max_tsk = NULL;
+    struct process *max_prc = NULL;
     int max = -1;
-    struct task *list = root_task;
+    struct process *list = root_process;
 	/*if there are no runned processes 
 	   it will bring them up
 	   and  count them
@@ -225,7 +226,7 @@ struct task *Find_max_prio(void)
             //I don't now what this thing have to do but without this thing prog works
             /*if(root_msg_reciever != NULL)
               {
-              if(list->pid == root_msg_reciever->r_tsk->pid)
+              if(list->pid == root_msg_reciever->r_prc->pid)
               ;
               }
               else*/
@@ -237,7 +238,7 @@ struct task *Find_max_prio(void)
         }
     }
 
-    list = root_task;
+    list = root_process;
 
 	//finding process with max prio
 
@@ -248,13 +249,13 @@ struct task *Find_max_prio(void)
             if(list->prio > max)
             {
                 max = list->prio;
-                max_tsk = list;
+                max_prc = list;
             }
         }
         list = list->next;
     }
 
-    max_tsk->runned = 1;
+    max_prc->runned = 1;
     nr_running--;
-    return max_tsk;
+    return max_prc;
 }

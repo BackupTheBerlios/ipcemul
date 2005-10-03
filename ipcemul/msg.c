@@ -22,12 +22,12 @@
 #include <unistd.h>
 #include "msg.h"
 #include "fork.h"
- 
+
 struct Lab_msg_queue *root_msg_queue = NULL;
 struct msg_msg *root_msg_msg = NULL;
 struct msg_receiver *root_msg_reciever = NULL;
 
-extern struct task *current_proc;
+extern struct process *current_proc;
 
 struct Lab_msg_queue *Find_ipc_key(int key)
 {
@@ -88,14 +88,14 @@ int Lab_sys_msgrcv(long type, int flag)
 //	struct list_head *list = NULL;
 	struct msg_receiver *msg_r;
 	int result;
-	struct task *tsk = current_proc;
+	struct process *prc = current_proc;
 	
 	mode = convert_mode(&type, flag);
 
-	queue = FindQueue(tsk->dscrptr->descrptr);
+	queue = FindQueue(prc->dscrptr->descrptr);
 	if(queue == NULL)
 	{
-		printf("cannot find queue with id %d\n", tsk->dscrptr->descrptr);
+		printf("cannot find queue with id %d\n", prc->dscrptr->descrptr);
 		return -1;
 	}
 	
@@ -120,7 +120,7 @@ int Lab_sys_msgrcv(long type, int flag)
 			printf("cannot alloc mem\n");
 			return -1;
 		}
-		msg_r->r_tsk = current_proc;
+		msg_r->r_prc = current_proc;
 		msg_r->r_mode = mode;
 		msg_r->r_msgtype = current_proc->code->param[1];
 		msg_r->next = root_msg_reciever;
@@ -129,7 +129,7 @@ int Lab_sys_msgrcv(long type, int flag)
 	}
 	else
 	{
-		printf("\nfound msg on time %d\n", tsk->run_time);  ////!!!!!!!!!!!!!!!!!!!!!!!!!
+		printf("\nfound msg on time %d\n", prc->run_time);  ////!!!!!!!!!!!!!!!!!!!!!!!!!
 		printf("rcv msg\n");
 		FreeMsg(msg);
 	}

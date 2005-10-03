@@ -37,7 +37,7 @@ struct msg_msg
 struct msg_receiver
 {
 	struct msg_receiver *next;
-	struct task* r_tsk;
+	struct process* r_prc;
  
 	int r_mode;
 	long r_msgtype;

@@ -21,12 +21,12 @@
 #define MSGRCV 1
 #define MSGGET 2
 
-struct func
+struct tsk
 {
-	int func; //0 msgsnd, 1 msgrcv, 2 msgget
+	int tsk; //0 msgsnd, 1 msgrcv, 2 msgget
 	int num_param;
 	int param[4];
-	struct func *next;
+	struct tsk *next;
 };
 
 struct descriptor
@@ -36,7 +36,7 @@ struct descriptor
 };
 
 /* Structure for the process */
-struct task
+struct process
 {
 	int pid;
 	int uid;
@@ -45,13 +45,13 @@ struct task
 	int runned;
 	int run_time;
 	
-	struct func *code;
+	struct tsk *code;
 	
 	struct descriptor *dscrptr;
 	
 	int search_msg;
 	
-	struct task *next;
+	struct process *next;
 };
 
 #define SEARCH_ANY              1
@@ -62,7 +62,7 @@ struct task
 #define MSG_EXCEPT      020000  /* recv any msg except of specified type.*/
 #define IPC_NOWAIT 00004000   /* return error on wait */
 int AddCode(int num,...);
-struct task *Find_max_prio(void);
+struct process *Find_max_prio(void);
 int fork_p(int pid, int uid, int gid, int prio);
-int ExecCode(struct task *tsk);
+int ExecCode(struct process *prc);
 int Add2proc_dscrptr(int msgid);

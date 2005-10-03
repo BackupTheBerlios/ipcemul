@@ -23,44 +23,44 @@
 #include <unistd.h>
 #include <time.h>
 #include "time.h"
-extern struct task *root_task;
-extern struct task *current_proc;
+extern struct process *root_process;
+extern struct process *current_proc;
 extern struct timespec *NULL_time;
 int scheduler(void)
 {
     struct timespec timevalue ,begin ;
-    struct task *tsk_add_time = root_task;
-    struct task *tsk;
+    struct process *prc_add_time = root_process;
+    struct process *prc;
 
-    tsk = Find_max_prio();
+    prc = Find_max_prio();
 
-    current_proc = tsk;
+    current_proc = prc;
     
     if (clock_gettime(CLOCK_THREAD_CPUTIME_ID, &begin)!=0)
 	printf("Error getting time\n");
     
-    printf("\nbegin work task with pid %d  at %9.2f\n",tsk->pid,time_substr(*NULL_time,begin));
+    printf("\nbegin work process with pid %d  at %9.2f\n",prc->pid,time_substr(*NULL_time,begin));
 
-    if(tsk->code == NULL)
+    if(prc->code == NULL)
     {
         printf("NULL proc\n");
     }
     else
     {
-        ExecCode(tsk);
+        ExecCode(prc);
     }
 //temporary not used, it need to be updated
-  /*  while(tsk_add_time != NULL)
+  /*  while(prc_add_time != NULL)
     {
-        tsk_add_time->run_time+=1;
-        tsk_add_time = tsk_add_time->next;
+        prc_add_time->run_time+=1;
+        prc_add_time = prc_add_time->next;
     }
 */
     if (clock_gettime(CLOCK_THREAD_CPUTIME_ID, &timevalue)!=0)
                 printf("Error getting time\n");
 
     
-    printf("end work task with pid %d at %9.2f \n",tsk->pid,time_substr(*NULL_time,timevalue));
+    printf("end work process with pid %d at %9.2f \n",prc->pid,time_substr(*NULL_time,timevalue));
 
     printf("time in work is %9.2f mcsec\n\n",time_substr(begin,timevalue));
 
