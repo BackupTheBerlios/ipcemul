@@ -29,7 +29,7 @@
 
 extern int pid;
 
-extern struct timespec *NULL_time;
+//extern struct timespec *NULL_time;
 
 
 int main(int argc, char **argv)
@@ -37,7 +37,7 @@ int main(int argc, char **argv)
     int i;
     /* Getting initial time. All other echoed times is just subtraction result.
        So we have allways small digits. Time is written to global structure NULL_time. */
-    init_time();
+//    init_time();
 
     // process 1        
     if(fork_p(1,1,1,2) < 0)
@@ -45,7 +45,7 @@ int main(int argc, char **argv)
         printf("cannot create proc\n");
         return -1;
     }
-    if(Lab_msgget(1) < 0)
+    if(Lab_msgget(IPC_PRIVATE, 1) < 0)
     {
         printf("mistake in msgget\n");
         return -1;
@@ -62,7 +62,7 @@ int main(int argc, char **argv)
         printf("cannot create proc\n");
         return -1;
     }
-    if(Lab_msgget(1) < 0)
+    if(Lab_msgget(1, 1) < 0)
     {
         printf("mistake in msgget\n");
         return -1;
@@ -84,7 +84,7 @@ int main(int argc, char **argv)
         printf("cannot create proc\n");
         return -1;
     }
-    if(Lab_msgget(1) < 0)
+    if(Lab_msgget(1, 1) < 0)
     {
         printf("mistake in msgget\n");
         return -1;
@@ -108,7 +108,5 @@ int main(int argc, char **argv)
         scheduler();
     }
 
-    //	waitpid(pid, NULL, 0);
-
-    return 0;
+     return 0;
 }

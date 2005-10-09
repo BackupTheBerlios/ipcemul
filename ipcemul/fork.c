@@ -110,9 +110,13 @@ int AddCode(int num,...)
     prc = current_proc;
 
     task->tsk = *(++pp);
+    printf("\ttask number %d\n", task->tsk);
     task->num_param = num - 1;
     for (i=1;i<num;i++)
+    {
         task->param[i]=*(++pp);
+	printf("\t\tadded param %d = %d\n",i, task->param[i]);
+    }
     task->next = NULL;
 	//adding new task at the end of stack
     tsk_temp = prc->code;
@@ -134,6 +138,8 @@ int AddCode(int num,...)
 void RemoveCode(struct process *prc)
 {
     struct tsk *tsk_h = prc->code;
+    
+    printf("\tfunct execed, del it\n");
     prc->code = prc->code->next;
     free(tsk_h);
 }
@@ -144,7 +150,7 @@ int Add2proc_dscrptr(int msgid)
     struct descriptor *dsc = current_proc->dscrptr;
 
 
-desc = (struct descriptor *)malloc(sizeof(struct descriptor));
+    desc = (struct descriptor *)malloc(sizeof(struct descriptor));
     if(desc == NULL)
     {
         printf("cannot alloc mem\n");
@@ -169,10 +175,10 @@ int ExecCode(struct process *prc)
 {
     int result;
 
-    //	OneStringToProtocol("\tin ExecCode");
     if(prc->code->tsk == 0)
     {
-        result = Lab_sys_msgsnd(prc->code->param[1], prc->code->param[2]);
+        printf("exec msgsnd\n");
+	result = Lab_sys_msgsnd(prc->code->param[1], prc->code->param[2]);
         if(result < 0)
         {
             printf("mistake in msgrcv\n");
@@ -182,7 +188,8 @@ int ExecCode(struct process *prc)
     }
     else if(prc->code->tsk == 1)
     {
-        result = Lab_sys_msgrcv(prc->code->param[1], prc->code->param[2]);
+        printf("exec msgrcv\n");
+	result = Lab_sys_msgrcv(prc->code->param[1], prc->code->param[2]);
         if(result < 0)
         {
             printf("mistake in msgrcv\n");
@@ -195,7 +202,8 @@ int ExecCode(struct process *prc)
     }
     else if(prc->code->tsk == 2)
     {
-        if (Lab_sys_msgget(prc->code->param[1]) < 0)
+        printf("exec msgget\n");
+	if (Lab_sys_msgget(prc->code->param[1], prc->code->param[2]) < 0)
         {
             printf("mistake in msgget\n");
             return -1;

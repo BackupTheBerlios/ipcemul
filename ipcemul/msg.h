@@ -44,13 +44,15 @@ struct msg_receiver
 	long r_maxsize;
 };
 
+#define IPC_PRIVATE 0
+
 struct Lab_msg_queue *FindQueue(int descriptor);
 void FreeMsg(struct msg_msg *msg);
-int Lab_msgget(int key);
+int Lab_msgget(int key, int flag);
 int Lab_msgsnd(long msg_type, int msg_flag);
 int Lab_msgrcv(int msg_type, long msg_flag);
 int Lab_sys_msgrcv(long type, int flag);
 int Lab_sys_msgsnd(int msg_type, int flag);
-int Lab_sys_msgget(int key);
+int Lab_sys_msgget(int key, int flag);
 int convert_mode(long *msgtyp, int msgflg);
 int testmsg(struct msg_msg* msg,long type,int mode);

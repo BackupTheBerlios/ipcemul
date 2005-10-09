@@ -25,10 +25,11 @@
 #include "time.h"
 extern struct process *root_process;
 extern struct process *current_proc;
-extern struct timespec *NULL_time;
+//extern struct timespec *NULL_time;
+
 int scheduler(void)
 {
-    struct timespec timevalue ,begin ;
+//    struct timespec timevalue ,begin ;
     struct process *prc_add_time = root_process;
     struct process *prc;
 
@@ -36,10 +37,10 @@ int scheduler(void)
 
     current_proc = prc;
     
-    if (clock_gettime(CLOCK_THREAD_CPUTIME_ID, &begin)!=0)
-	printf("Error getting time\n");
+//    if (clock_gettime(CLOCK_THREAD_CPUTIME_ID, &begin)!=0)
+//	printf("Error getting time\n");
     
-    printf("\nbegin work process with pid %d  at %9.2f\n",prc->pid,time_substr(*NULL_time,begin));
+    printf("\nbegin work process with pid %d\n",prc->pid);
 
     if(prc->code == NULL)
     {
@@ -56,13 +57,13 @@ int scheduler(void)
         prc_add_time = prc_add_time->next;
     }
 */
-    if (clock_gettime(CLOCK_THREAD_CPUTIME_ID, &timevalue)!=0)
-                printf("Error getting time\n");
+//    if (clock_gettime(CLOCK_THREAD_CPUTIME_ID, &timevalue)!=0)
+//                printf("Error getting time\n");
 
     
-    printf("end work process with pid %d at %9.2f \n",prc->pid,time_substr(*NULL_time,timevalue));
+    printf("end work process with pid %d\n",prc->pid);
 
-    printf("time in work is %9.2f mcsec\n\n",time_substr(begin,timevalue));
+//    printf("time in work is %9.2f mcsec\n\n",time_substr(begin,timevalue));
 
     return 0;
 }
