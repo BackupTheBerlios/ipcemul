@@ -25,7 +25,7 @@
 #include "sched.h"
 #include "fork.h"
 #include "msg.h"
-#include "time.h"
+//#include "time.h"
 
 extern int pid;
 
@@ -45,7 +45,7 @@ int main(int argc, char **argv)
         printf("cannot create proc\n");
         return -1;
     }
-    if(Lab_msgget(IPC_PRIVATE, 1) < 0)
+    if(Lab_msgget(IPC_PRIVATE, IPC_CREAT) < 0)
     {
         printf("mistake in msgget\n");
         return -1;
@@ -62,7 +62,7 @@ int main(int argc, char **argv)
         printf("cannot create proc\n");
         return -1;
     }
-    if(Lab_msgget(1, 1) < 0)
+    if(Lab_msgget(1, IPC_CREAT|IPC_EXCL) < 0)
     {
         printf("mistake in msgget\n");
         return -1;
@@ -84,7 +84,7 @@ int main(int argc, char **argv)
         printf("cannot create proc\n");
         return -1;
     }
-    if(Lab_msgget(1, 1) < 0)
+    if(Lab_msgget(1, IPC_CREAT) < 0)
     {
         printf("mistake in msgget\n");
         return -1;

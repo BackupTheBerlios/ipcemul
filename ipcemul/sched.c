@@ -22,7 +22,8 @@
 #include "fork.h"
 #include <unistd.h>
 #include <time.h>
-#include "time.h"
+//#include "time.h"
+
 extern struct process *root_process;
 extern struct process *current_proc;
 //extern struct timespec *NULL_time;

@@ -72,10 +72,11 @@ int Lab_sys_msgget(int key, int flag)
 	    ipc_->next = root_msg_queue;
 	    root_msg_queue = ipc_;
     	}
-	else
+	else if ((ipc_ = Find_ipc_key(key)) == NULL)
 	{
-		ipc_ = Find_ipc_key(key);
-		if(ipc_ == NULL)
+		//ipc_ = Find_ipc_key(key);
+		//if(ipc_ == NULL)
+		if (flag & IPC_CREAT)
 		{
 			ipc_ = (struct Lab_msg_queue *)malloc(sizeof(struct Lab_msg_queue));
 			if(ipc_ == NULL)
@@ -91,17 +92,24 @@ int Lab_sys_msgget(int key, int flag)
 			ipc_->next = root_msg_queue;
 			root_msg_queue = ipc_;
 		}
+		//else
+		//{
+		//	Add2proc_dscrptr(ipc_->msgid);
+		//	printf("\tqueue already exist, simply add descriptor\n");
+		//	return ipc_->msgid;
+		//}
 		else
 		{
-			Add2proc_dscrptr(ipc_->msgid);
-			printf("\tqueue already exist, simply add descriptor\n");
-			return ipc_->msgid;
+			printf("\t no such file or dir\n");
+			return -1;
 		}
 	}
+	else if (flag & IPC_CREAT && flag & IPC_EXCL)
+		printf("\talready exist\n");
 
 	Add2proc_dscrptr(ipc_->msgid);
 
-	printf("\tmade queue with msgid = %d\n", ipc_->msgid);
+	printf("\t(added to proc) made queue with msgid = %d\n", ipc_->msgid);
 	return ipc_->msgid;
 }
 

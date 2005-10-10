@@ -46,6 +46,11 @@ struct msg_receiver
 
 #define IPC_PRIVATE 0
 
+/* resource get request flags */
+#define IPC_CREAT  00001000   /* create if key is nonexistent */
+#define IPC_EXCL   00002000   /* fail if key exists */
+#define IPC_NOWAIT 00004000   /* return error on wait */
+
 struct Lab_msg_queue *FindQueue(int descriptor);
 void FreeMsg(struct msg_msg *msg);
 int Lab_msgget(int key, int flag);
