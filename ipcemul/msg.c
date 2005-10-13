@@ -265,12 +265,20 @@ void FreeMsg(struct msg_msg *msg)
 	
 	printf("\tfree memory\n");
 
-	while(msg_h->next->m_type != msg->m_type)
-		msg_h = msg_h->next;
-
-	msg_h->next = msg->next;
+	if (msg_h->next == NULL)
+	{
+		free(msg);
+		root_msg_msg = NULL;
+	}
+	else
+	{
+		while(msg_h->next->m_type != msg->m_type)
+			msg_h = msg_h->next;
 	
-	free(msg);
+		msg_h->next = msg->next;
+	
+		free(msg);
+	}
 }
 
 int convert_mode(long* msgtyp, int msgflg)
