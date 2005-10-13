@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -25,7 +26,7 @@
 #include "sched.h"
 #include "fork.h"
 #include "msg.h"
-//#include "time.h"
+#include "sort.h"
 
 extern int pid;
 
@@ -50,7 +51,12 @@ int main(int argc, char **argv)
         printf("mistake in msgget\n");
         return -1;
     }
-    if(Lab_msgrcv(1,0) < 0)
+    if(Lab_msgsnd(1, 0) < 0)
+    {
+	    printf("mistake in msgsnd\n");
+	    return -1;
+    }
+    if(Lab_msgrcv(3,0) < 0)
     {
         printf("mistake in msgsnd\n");
         return -1;
@@ -69,13 +75,18 @@ int main(int argc, char **argv)
     }
     if(Lab_msgsnd(1,0) < 0)
     {
-        printf("mistake in msgrcv\n");
+        printf("mistake in msgsnd\n");
         return -1;
     }
     if(Lab_msgsnd(2,0) < 0)
     {
-        printf("mistake in msgrcv\n");
+        printf("mistake in msgsnd\n");
         return -1;
+    }
+    if (Lab_msgsnd(1,0) < 0)
+    {
+	    printf("make in msgsnd\n");
+	    return -1;
     }
 
     //process 3
@@ -89,9 +100,14 @@ int main(int argc, char **argv)
         printf("mistake in msgget\n");
         return -1;
     }
-    if(Lab_msgrcv(1,0) < 0)
+    if(Lab_msgsnd(3,0) < 0)
     {
-        printf("mistake in msgsnd\n");
+	    printf("mistake in msgsnd\n");
+	    return -1;
+    }
+    if(Lab_msgrcv(3,0) < 0)
+    {
+        printf("mistake in msgrcv\n");
         return -1;
     }
 
@@ -101,9 +117,8 @@ int main(int argc, char **argv)
         printf("cannot create proc\n");
         return -1;
     }
-
-
-    for (i = 0; i < 10; i++)
+    
+    for (i = 0; i < 11; i++)
     {	
         scheduler();
     }
