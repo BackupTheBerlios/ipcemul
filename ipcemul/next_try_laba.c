@@ -30,15 +30,9 @@
 
 extern int pid;
 
-//extern struct timespec *NULL_time;
-
-
 int main(int argc, char **argv)
 {
     int i;
-    /* Getting initial time. All other echoed times is just subtraction result.
-       So we have allways small digits. Time is written to global structure NULL_time. */
-//    init_time();
 
     // process 1        
     if(fork_p(1,1,1,2) < 0)

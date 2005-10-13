@@ -22,15 +22,14 @@
 #include <unistd.h>
 #include "fork.h"
 #include "msg.h"
+#include "sort.h"
 
 int nr_running = 0;
 
 extern struct Lab_msg_queue *root_msg_queue;
-
 extern struct msg_receiver *root_msg_reciever; 
 
 struct process *current_proc = NULL;
-
 struct process *root_process = NULL;
 
 struct process *Find_process(int pid)
@@ -69,6 +68,7 @@ int fork_p(int pid, int uid, int gid, int prio)
         prc->runned = 0;
         prc->run_time = 0;
         prc->search_msg = 0;
+	prc->run = 0;
 
         /* New process is situated before first process (stack) */
         prc->next = root_process;
@@ -188,7 +188,9 @@ int ExecCode(struct process *prc)
     }
     else if(prc->code->tsk == 1)
     {
-        printf("exec msgrcv\n");
+        printf("bebore Sort\n");
+	sort_msg(0);	    
+	printf("exec msgrcv\n");
 	result = Lab_sys_msgrcv(prc->code->param[1], prc->code->param[2]);
         if(result < 0)
         {

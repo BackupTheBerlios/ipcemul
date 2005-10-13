@@ -262,18 +262,8 @@ int Lab_sys_msgsnd(int msg_type, int flag)
 void FreeMsg(struct msg_msg *msg)
 {
 	struct msg_msg *msg_h = root_msg_msg;
-//	struct msg_msg *msg_h2 = msg_h;
 	
 	printf("\tfree memory\n");
-//      finding previous msg
-	printf("\tbefore msg que\n");
-	while(msg_h != NULL)
-	{
-		printf("m_type = %d  ", msg_h->m_type);
-		msg_h = msg_h->next;
-	}
-	printf("\n");
-	msg_h = root_msg_msg;
 
 	while(msg_h->next->m_type != msg->m_type)
 		msg_h = msg_h->next;
@@ -284,15 +274,6 @@ void FreeMsg(struct msg_msg *msg)
 		msg_h->next = msg->next;
 	
 	free(msg);
-
-	printf("\tafter msg que\n");
-	msg_h = root_msg_msg;
-	while(msg_h != NULL)
-	{
-		printf("m_type = %d  ", msg_h->m_type);
-		msg_h = msg_h->next;
-	}
-	printf("\n");		
 }
 
 int convert_mode(long* msgtyp, int msgflg)

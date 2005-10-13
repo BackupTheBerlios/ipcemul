@@ -44,6 +44,7 @@ struct process
 	int prio;
 	int runned;
 	int run_time;
+	int run;       //sleep or not
 	
 	struct tsk *code;
 	

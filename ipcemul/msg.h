@@ -18,19 +18,37 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+/*
+ * Simple doubly linked list implementation.
+ *
+ * Some of the internal functions ("__xxx") are useful when
+ * manipulating whole lists rather than single entries, as
+ * sometimes we already know the next/prev entries and we can
+ * generate better code by using them directly rather than
+ * using the generic single-entry routines.
+ */
+struct list_head
+{
+	struct list_head *next, *prev;
+};
+
 /* one msq_queue structure for each present queue on the system */
 struct Lab_msg_queue
 {
     int key;
     int msgid;
     struct Lab_msg_queue *next;
+
+    struct list_head q_messages;
+    struct list_head q_receivers;
+    struct list_head q_senders;
 };
 
 /* one msg_msg structure for each message */
 struct msg_msg
 {
-    struct msg_msg *next; 
-    long  m_type;
+	struct msg_msg *next; 
+	long  m_type;
 };
 
 /* one msg_receiver structure for each sleeping receiver */

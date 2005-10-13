@@ -22,24 +22,17 @@
 #include "fork.h"
 #include <unistd.h>
 #include <time.h>
-//#include "time.h"
 
 extern struct process *root_process;
 extern struct process *current_proc;
-//extern struct timespec *NULL_time;
 
 int scheduler(void)
 {
-//    struct timespec timevalue ,begin ;
-    struct process *prc_add_time = root_process;
     struct process *prc;
 
     prc = Find_max_prio();
 
     current_proc = prc;
-    
-//    if (clock_gettime(CLOCK_THREAD_CPUTIME_ID, &begin)!=0)
-//	printf("Error getting time\n");
     
     printf("\nbegin work process with pid %d\n",prc->pid);
 
@@ -51,20 +44,8 @@ int scheduler(void)
     {
         ExecCode(prc);
     }
-//temporary not used, it need to be updated
-  /*  while(prc_add_time != NULL)
-    {
-        prc_add_time->run_time+=1;
-        prc_add_time = prc_add_time->next;
-    }
-*/
-//    if (clock_gettime(CLOCK_THREAD_CPUTIME_ID, &timevalue)!=0)
-//                printf("Error getting time\n");
-
     
     printf("end work process with pid %d\n",prc->pid);
-
-//    printf("time in work is %9.2f mcsec\n\n",time_substr(begin,timevalue));
 
     return 0;
 }
