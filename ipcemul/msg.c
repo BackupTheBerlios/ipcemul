@@ -268,10 +268,7 @@ void FreeMsg(struct msg_msg *msg)
 	while(msg_h->next->m_type != msg->m_type)
 		msg_h = msg_h->next;
 
-	if (msg->next == NULL)
-		msg_h->next = NULL;
-	else
-		msg_h->next = msg->next;
+	msg_h->next = msg->next;
 	
 	free(msg);
 }
