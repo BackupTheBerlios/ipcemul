@@ -25,6 +25,7 @@
 #include "sort.h"
 
 int nr_running = 0;
+int number_of_tasks = 0; //gives to scheduler knowledge how much work
 
 extern struct Lab_msg_queue *root_msg_queue;
 extern struct msg_receiver *root_msg_reciever; 
@@ -68,7 +69,7 @@ int fork_p(int pid, int uid, int gid, int prio)
         prc->runned = 0;
         prc->run_time = 0;
         prc->search_msg = 0;
-	prc->run = 0;
+	prc->run = 1;
 
         /* New process is situated before first process (stack) */
         prc->next = root_process;
@@ -105,7 +106,7 @@ int AddCode(int num,...)
         printf("cannot alloc mem\n");
         return -1;
     }
-
+	number_of_tasks++;
     //prc = Find_process(*(++pp));
     prc = current_proc;
 
@@ -142,6 +143,8 @@ void RemoveCode(struct process *prc)
     printf("\tfunct execed, del it\n");
     prc->code = prc->code->next;
     free(tsk_h);
+
+    number_of_tasks--;
 }
 
 int Add2proc_dscrptr(int msgid)

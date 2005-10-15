@@ -25,6 +25,7 @@
 
 extern struct process *root_process;
 extern struct process *current_proc;
+extern int number_of_tasks;
 
 int scheduler(void)
 {
@@ -36,6 +37,11 @@ int scheduler(void)
     
     printf("\nbegin work process with pid %d\n",prc->pid);
 
+    //if (prc->run == 0)
+    //{
+	//    if (number_of_tasks == 1);
+	//    	return 1;
+    //}
     if(prc->code == NULL)
     {
         printf("NULL proc\n");

@@ -38,6 +38,7 @@ struct msg_receiver *root_msg_reciever = NULL;
 //static struct Lab_ipc_ids msg_ids;
 
 extern struct process *current_proc;
+extern int number_of_tasks;
 
 //#define msg_buildid(id, seq) \
 //	ipc_buildid(&msg_ids, id, seq)
@@ -179,19 +180,21 @@ int Lab_sys_msgrcv(long type, int flag)
 		if (flag & IPC_NOWAIT)
 			return 0;
 		printf("\tmsg == NULL\n");
-		msg_r = (struct msg_receiver *)malloc(sizeof(struct msg_receiver));
-		if(msg_r == NULL)
-		{
-			printf("cannot alloc mem\n");
-			return -1;
-		}
-		printf("\tadd proc to msg_rcv\n");
-		msg_r->r_prc = current_proc;
-		msg_r->r_mode = mode;
-		msg_r->r_msgtype = current_proc->code->param[1];
-		msg_r->next = root_msg_reciever;
-		root_msg_reciever = msg_r;
-		return 1;
+		return 0;
+		//msg_r = (struct msg_receiver *)malloc(sizeof(struct msg_receiver));
+		//if(msg_r == NULL)
+		//{
+		//	printf("cannot alloc mem\n");
+		//	return -1;
+		//}
+		//printf("\tadd proc to msg_rcv\n");
+		//current_proc->run = 0; //go to sleep
+		//msg_r->r_prc = current_proc;
+		//msg_r->r_mode = mode;
+		//msg_r->r_msgtype = current_proc->code->param[1];
+		//msg_r->next = root_msg_reciever;
+		//root_msg_reciever = msg_r;
+		//return 1;
 	}
 	else
 	{
@@ -265,8 +268,19 @@ void FreeMsg(struct msg_msg *msg)
 	
 	printf("\tfree memory\n");
 
-	if (msg_h->next == NULL)
+	printf("\tbefore del\n");
+	while (msg_h != NULL)
 	{
+		printf("\t %d", msg_h->m_type);
+		msg_h = msg_h->next;
+	}
+	printf("\n");
+	msg_h = root_msg_msg;
+	
+	if ((msg_h->next == NULL) && (msg_h->m_type == msg->m_type))
+	{
+		printf("\tremove first and last msg\n");
+		
 		free(msg);
 		root_msg_msg = NULL;
 	}
@@ -279,6 +293,17 @@ void FreeMsg(struct msg_msg *msg)
 	
 		free(msg);
 	}
+
+	msg_h = root_msg_msg;
+	printf("\tafter del\n");
+	while (msg_h != NULL)
+	{
+		printf("\t %d", msg_h->m_type);
+		msg_h = msg_h->next;
+	}
+	printf("\n");
+	//msg_h = root_msg_msg;
+				
 }
 
 int convert_mode(long* msgtyp, int msgflg)
