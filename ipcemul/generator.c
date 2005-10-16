@@ -8,7 +8,7 @@ extern struct process *current_proc;
 
 int generator_msgs(int pid, int begin, int end, int key)
 {
-	struct msg_msg *msg = NULL;
+//	struct msg_msg *msg = NULL;
 	struct process *proc;
 
 	if ((proc = Find_process(pid)) == NULL)
@@ -53,8 +53,6 @@ int generator_procs(int begin, int end, int mode)
 		result = fork_p(rand_pid, rand_uid, rand_gid, rand_prio);
 
 		end--;
-
-		printf("");
 	}
 	
 	return 0;

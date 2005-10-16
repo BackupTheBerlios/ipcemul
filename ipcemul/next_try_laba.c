@@ -30,12 +30,12 @@
 #include "generator.h"
 
 extern int pid;
-extern int number_of_tasks;
+//extern int number_of_tasks;
 extern struct msg_msg *root_msg_msg;
 
 int main(int argc, char **argv)
 {
-    int i;
+//    int i;
 
     // process 1        
 //    if(fork_p(1,1,1,2) < 0)
@@ -113,12 +113,10 @@ int main(int argc, char **argv)
 	if (make_msgrcv(2, 3, 1) == -1) //pid, m_type, msg_flag
 		return -1;
 	
-	while(number_of_tasks != 0)
-	{	
-		printf("-----------number of tasks = %d--------\n", number_of_tasks);
-		if ((scheduler()) == 1)
-			break;
+	if (run() == -1)
+	{
+		return -1;
 	}
-
+	
 	return 0;
 }

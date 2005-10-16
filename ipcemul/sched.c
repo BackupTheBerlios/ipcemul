@@ -50,3 +50,16 @@ int scheduler(void)
 
     return 0;
 }
+
+int run (void)
+{
+	while(number_of_tasks != 0)
+	{
+		printf("-----------number of tasks = %d--------\n", number_of_tasks);
+		if ((scheduler()) == 1)
+			break;
+	}
+
+	return 0;
+}
+	

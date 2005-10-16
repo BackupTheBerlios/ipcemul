@@ -142,13 +142,13 @@ int Lab_sys_msgget(int key, int flag)
 	return ipc_->msgid;
 }
 
-int Lab_sys_msgrcv(long type, int flag)
+int Lab_sys_msgrcv(int type, int flag)
 {
 	int mode;
 	struct Lab_msg_queue *queue = NULL;
 	struct msg_msg *msg = root_msg_msg;
 //	struct list_head *list = NULL;
-	struct msg_receiver *msg_r;
+//	struct msg_receiver *msg_r;
 	int result;
 	struct process *prc = current_proc;
 	int time = 0;
@@ -238,7 +238,7 @@ int testmsg(struct msg_msg* msg,long type,int mode)
 
 int Lab_sys_msgsnd(int msg_type, int flag)
 {
-	struct Lab_msg_queue *msq = NULL;
+//	struct Lab_msg_queue *msq = NULL;
 	struct msg_msg *msg = NULL;
 	
 	if (msg_type < 1)
@@ -365,7 +365,7 @@ int Lab_msgsnd(long msg_type, int msg_flag)
 	return AddCode(3, MSGSND, msg_type, msg_flag);
 }
 
-int Lab_msgrcv(int msg_type, long msg_flag)
+int Lab_msgrcv(int msg_type, int msg_flag)
 {
 	return AddCode(3, MSGRCV, msg_type, msg_flag);
 }
