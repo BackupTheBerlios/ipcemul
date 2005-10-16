@@ -38,83 +38,81 @@ int main(int argc, char **argv)
     int i;
 
     // process 1        
-    if(fork_p(1,1,1,2) < 0)
-    {
-      printf("cannot create proc\n");
-        return -1;
-    }
-    if(Lab_msgget(IPC_PRIVATE, IPC_CREAT) < 0)
-    {
-        printf("mistake in msgget\n");
-        return -1;
-    }
-//    if(Lab_msgrcv(3,0) < 0)
+//    if(fork_p(1,1,1,2) < 0)
 //    {
-//        printf("mistake in msgsnd\n");
+//      printf("cannot create proc\n");
+//        return -1;
+//    }
+//    if(Lab_msgget(IPC_PRIVATE, IPC_CREAT) < 0)
+//    {
+//        printf("mistake in msgget\n");
 //        return -1;
 //    }
 
     //process 2        
-    if(fork_p(2,1,1,1) < 0)
-    {
-        printf("cannot create proc\n");
-        return -1;
-    }
-    if(Lab_msgget(1, IPC_CREAT|IPC_EXCL) < 0)
-    {
-        printf("mistake in msgget\n");
-        return -1;
-    }
-    if(Lab_msgsnd(3,0) < 0)
-    {
-        printf("mistake in msgsnd\n");
-        return -1;
-    }
-    if(Lab_msgrcv(3,0) < 0)
-    {
-    	printf("mistake in msgsnd\n");
-    	return -1;
-    }
+//    if(fork_p(2,1,1,1) < 0)
+//    {
+//        printf("cannot create proc\n");
+//        return -1;
+//    }
+//    if(Lab_msgget(1, IPC_CREAT|IPC_EXCL) < 0)
+//    {
+//        printf("mistake in msgget\n");
+//        return -1;
+//    }
+//    if(Lab_msgsnd(3,0) < 0)
+//    {
+//        printf("mistake in msgsnd\n");
+//        return -1;
+//    }
+//    if(Lab_msgrcv(3,0) < 0)
+//    {
+//    	printf("mistake in msgsnd\n");
+//    	return -1;
+//    }
         
 
     //process 3
-    if(fork_p(3,1,1,2) < 0)
-    {
-        printf("cannot create proc\n");
-        return -1;
-    }
-    if(Lab_msgget(1, IPC_CREAT) < 0)
-    {
-        printf("mistake in msgget\n");
-        return -1;
-    }
+//    if(fork_p(3,1,1,2) < 0)
+//    {
+//        printf("cannot create proc\n");
+//        return -1;
+//    }
+//    if(Lab_msgget(1, IPC_CREAT) < 0)
+//    {
+//        printf("mistake in msgget\n");
+//        return -1;
+//    }
 //    if(Lab_msgsnd(3,0) < 0)
 //    {
 //	    printf("mistake in msgsnd\n");
 //	    return -1;
 //    }
-    if(Lab_msgrcv(3,0) < 0)
-    {
-        printf("mistake in msgrcv\n");
-        return -1;
-    }
-	if(Lab_msgrcv(3,0) < 0)
-	{
-		printf("mistake in msgrcv\n");
-		return -1;
-	}
+//    if(Lab_msgrcv(3,0) < 0)
+//    {
+//        printf("mistake in msgrcv\n");
+//        return -1;
+//    }
+//	if(Lab_msgrcv(3,0) < 0)
+//	{
+//		printf("mistake in msgrcv\n");
+//		return -1;
+//	}
     
 
     //process 4
-    if(fork_p(4,1,1,5) < 0)
-    {
-        printf("cannot create proc\n");
-        return -1;
-    }
+//    if(fork_p(4,1,1,5) < 0)
+//    {
+//        printf("cannot create proc\n");
+//        return -1;
+//    }
     
-//	generator_procs(1,5,1);
-//	generator_msgs(1,5,4);
-    
+	generator_procs(1,5,1);
+	generator_msgs(2,1,5,4);
+
+	if (make_msgrcv(2, 3, 1) == -1) //pid, m_type, msg_flag
+		return -1;
+	
 	while(number_of_tasks != 0)
 	{	
 		printf("-----------number of tasks = %d--------\n", number_of_tasks);

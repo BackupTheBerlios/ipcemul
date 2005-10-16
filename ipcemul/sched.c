@@ -37,11 +37,6 @@ int scheduler(void)
     
     printf("\nbegin work process with pid %d\n",prc->pid);
 
-    //if (prc->run == 0)
-    //{
-	//    if (number_of_tasks == 1);
-	//    	return 1;
-    //}
     if(prc->code == NULL)
     {
         printf("NULL proc\n");

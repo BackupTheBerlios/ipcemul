@@ -156,8 +156,16 @@ int Lab_sys_msgrcv(long type, int flag)
 	printf("\ttrying rcv msg with type = %d\n", type);
 	
 	mode = convert_mode(&type, flag);
+	printf("\tafter conver_mode\n");
 
+	if (prc == NULL)
+	{
+		printf("\thmm....proc == NULL\n");
+		return -1;
+	}
 	queue = FindQueue(prc->dscrptr->descrptr);
+
+	printf("\tafter FindQueue\n");
 	if(queue == NULL)
 	{
 		printf("cannot find queue with id %d\n", prc->dscrptr->descrptr);
