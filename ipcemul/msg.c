@@ -273,6 +273,7 @@ int Lab_sys_msgsnd(int msg_type, int flag)
 void FreeMsg(struct msg_msg *msg)
 {
 	struct msg_msg *msg_h = root_msg_msg;
+	struct msg_msg *msg_prev = NULL;
 	
 	printf("\tfree memory\n");
 
@@ -285,12 +286,25 @@ void FreeMsg(struct msg_msg *msg)
 	printf("\n");
 	msg_h = root_msg_msg;
 	
+//	printf("\nbefore circle\n");
+//	while(msg_h->m_type != msg->m_type)
+//	{
+//		printf("\tin circle\n");
+//		msg_prev = msg_h;
+//		msg_h = msg_h->next;
+//	}
+
+//	msg_prev->next = msg->next;
+//	printf("\tbefore free\n");
+//	free(msg);
 	if ((msg_h->next == NULL) && (msg_h->m_type == msg->m_type))
 	{
 		printf("\tremove first and last msg\n");
 		
-		free(msg);
-		root_msg_msg = NULL;
+		root_msg_msg = msg_h->next;
+//		free(msg);
+		printf("\tafter free(msg)\n");
+//		root_msg_msg = NULL;
 	}
 	else
 	{
@@ -302,6 +316,8 @@ void FreeMsg(struct msg_msg *msg)
 		free(msg);
 	}
 
+//	free(msg);
+	printf("\nafter if else\n");
 	msg_h = root_msg_msg;
 	printf("\tafter del\n");
 	while (msg_h != NULL)
@@ -310,8 +326,7 @@ void FreeMsg(struct msg_msg *msg)
 		msg_h = msg_h->next;
 	}
 	printf("\n");
-	//msg_h = root_msg_msg;
-				
+	//msg_h = root_msg_msg;				
 }
 
 int convert_mode(long* msgtyp, int msgflg)
