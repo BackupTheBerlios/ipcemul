@@ -96,7 +96,6 @@ int fork_p(int pid, int uid, int gid, int prio)
 int AddCode(int num,...)
 {
     int i;
-    //int pp* = &num;
     va_list ap;
     int *pp;
     struct process *prc = NULL;
@@ -226,7 +225,6 @@ int ExecCode(struct process *prc)
     }
     else
     {
-        printf("exec nothing: ERROR... PROGA BLIN NE RABOTAET\n");
         return -1;
     }
 
