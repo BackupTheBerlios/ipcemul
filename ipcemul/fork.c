@@ -217,7 +217,10 @@ int ExecCode(struct process *prc)
         RemoveCode(prc);
     }
     else
+    {
+        printf("exec nothing: ERROR... PROGA BLIN NE RABOTAET\n");
         return -1;
+    }
 
 
     return 0;
