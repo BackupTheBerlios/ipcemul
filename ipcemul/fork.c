@@ -96,6 +96,9 @@ int fork_p(int pid, int uid, int gid, int prio)
 int AddCode(int num,...)
 {
     int i;
+
+    /* Using va_ functions from stdvar.h gives us OS and arch independence */
+    /* In future we can remove unnecessary num variable                    */
     va_list ap;
     int *pp;
     struct process *prc = NULL;
