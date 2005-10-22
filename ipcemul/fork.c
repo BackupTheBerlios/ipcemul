@@ -23,6 +23,7 @@
 #include "fork.h"
 #include "msg.h"
 #include "sort.h"
+#include <stdarg.h>
 
 int nr_running = 0;
 int number_of_tasks = 0; //gives to scheduler knowledge how much work
@@ -95,11 +96,16 @@ int fork_p(int pid, int uid, int gid, int prio)
 int AddCode(int num,...)
 {
     int i;
-    int *pp = &num;
+    //int pp* = &num;
+    va_list ap;
+    int *pp;
     struct process *prc = NULL;
     struct tsk *task = NULL;
     struct tsk *tsk_temp = NULL; 
 
+    va_start(ap,num);
+    pp = &num;
+    
     task = (struct tsk *)malloc(sizeof(struct tsk));
     if(task == NULL)
     {
@@ -110,12 +116,12 @@ int AddCode(int num,...)
     //prc = Find_process(*(++pp));
     prc = current_proc;
 
-    task->tsk = *(++pp);
+    task->tsk = va_arg(ap,int);
     printf("\ttask number %d\n", task->tsk);
     task->num_param = num - 1;
     for (i=1;i<num;i++)
     {
-        task->param[i]=*(++pp);
+        task->param[i]=va_arg(ap,int);
 	printf("\t\tadded param %d = %d\n",i, task->param[i]);
     }
     task->next = NULL;
@@ -133,6 +139,8 @@ int AddCode(int num,...)
 	//if there are no tasks this will be the first
     prc->code = task;
 
+    va_end(ap);
+    
     return 0;
 }
 
@@ -178,7 +186,7 @@ int ExecCode(struct process *prc)
 {
     int result;
 
-    if(prc->code->tsk == 0)
+    if(prc->code->tsk == MSGSND)
     {
         printf("exec msgsnd\n");
 	result = Lab_sys_msgsnd(prc->code->param[1], prc->code->param[2]);
@@ -189,7 +197,7 @@ int ExecCode(struct process *prc)
         }
         RemoveCode(prc);
     }
-    else if(prc->code->tsk == 1)
+    else if(prc->code->tsk == MSGRCV)
     {
         printf("bebore Sort\n");
 	sort_msg(0);	    
@@ -205,7 +213,7 @@ int ExecCode(struct process *prc)
         else
             RemoveCode(prc);
     }
-    else if(prc->code->tsk == 2)
+    else if(prc->code->tsk == MSGGET)
     {
         printf("exec msgget\n");
 	if (Lab_sys_msgget(prc->code->param[1], prc->code->param[2]) < 0)
