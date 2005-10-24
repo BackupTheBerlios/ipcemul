@@ -18,26 +18,16 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include <stdio.h>
-//#include <stdlib.h>
-//#include <sys/types.h>
-//#include <sys/wait.h>
-//#include <unistd.h>
-//#include <signal.h>
 #include "sched.h"
 #include "fork.h"
 #include "msg.h"
 //#include "sort.h"
 //#include "generator.h"
 
-//extern int pid;
-//extern struct msg_msg *root_msg_msg;
-
 int main(int argc, char **argv)
 {
-//    int i;
-
     // process 1        
-    if(fork_p(1,1,1,2) < 0)
+/*    if(fork_p(1,1,1,2) < 0)
     {
       printf("cannot create proc\n");
         return -1;
@@ -105,12 +95,12 @@ int main(int argc, char **argv)
         printf("cannot create proc\n");
         return -1;
     }
-    
-//	generator_procs(1,5,1);
-//	generator_msgs(2,1,5,4);
+*/    
+	generator_procs(1,5,1);
+	generator_msgs(2,1,5,4);
 
-//	if (make_msgrcv(2, 3, 1) == -1) //pid, m_type, msg_flag
-//		return -1;
+	if (make_msgrcv(2, 3, 1) == -1) //pid, m_type, msg_flag
+		return -1;
 	
 	if (run() == -1)
 	{
