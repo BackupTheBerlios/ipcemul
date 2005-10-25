@@ -280,7 +280,7 @@ void FreeMsg(struct msg_msg *msg)
 	printf("\tbefore del\n");
 	while (msg_h != NULL)
 	{
-		printf("\t %d", msg_h->m_type);
+		printf("\t %ld", msg_h->m_type);
 		msg_h = msg_h->next;
 	}
 	printf("\n");
@@ -322,7 +322,7 @@ void FreeMsg(struct msg_msg *msg)
 	printf("\tafter del\n");
 	while (msg_h != NULL)
 	{
-		printf("\t %d", msg_h->m_type);
+		printf("\t %ld", msg_h->m_type);
 		msg_h = msg_h->next;
 	}
 	printf("\n");
