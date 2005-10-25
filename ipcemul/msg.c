@@ -142,7 +142,7 @@ int Lab_sys_msgget(int key, int flag)
 	return ipc_->msgid;
 }
 
-int Lab_sys_msgrcv(int type, int flag)
+int Lab_sys_msgrcv(long type, int flag)
 {
 	int mode;
 	struct Lab_msg_queue *queue = NULL;
@@ -153,7 +153,7 @@ int Lab_sys_msgrcv(int type, int flag)
 	struct process *prc = current_proc;
 	int time = 0;
 	
-	printf("\ttrying rcv msg with type = %d\n", type);
+	printf("\ttrying rcv msg with type = %ld\n", type);
 	
 	mode = convert_mode(&type, flag);
 	printf("\tafter conver_mode\n");
@@ -380,7 +380,7 @@ int Lab_msgsnd(long msg_type, int msg_flag)
 	return AddCode(3, MSGSND, msg_type, msg_flag);
 }
 
-int Lab_msgrcv(int msg_type, int msg_flag)
+int Lab_msgrcv(long msg_type, int msg_flag)
 {
 	return AddCode(3, MSGRCV, msg_type, msg_flag);
 }
