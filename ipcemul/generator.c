@@ -1,7 +1,7 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include"msg.h"
-#include"fork.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include "msg.h"
+#include "fork.h"
 
 extern struct msg_msg *root_msg_msg;
 extern struct process *current_proc;
