@@ -22,7 +22,7 @@
 #include "fork.h"
 #include "msg.h"
 //#include "sort.h"
-//#include "generator.h"
+#include "generator.h"
 
 int main(int argc, char **argv)
 {

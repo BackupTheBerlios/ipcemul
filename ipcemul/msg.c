@@ -40,28 +40,28 @@ struct msg_receiver *root_msg_reciever = NULL;
 extern struct process *current_proc;
 extern int number_of_tasks;
 
-//#define msg_buildid(id, seq) \
-//	ipc_buildid(&msg_ids, id, seq)
+/* #define msg_buildid(id, seq) \
+	ipc_buildid(&msg_ids, id, seq)
 
-//static int Lab_newque(int key, int msgflg)
-//{
-//	int id;
-//	int retval;
-//	struct Lab_msg_queue *msq = NULL;
+static int Lab_newque(int key, int msgflg)
+{
+	int id;
+	int retval;
+	struct Lab_msg_queue *msq = NULL;
 
-//	msq = (struct Lab_msq_queue *)malloc(sizeof(struct Lab_msg_queue));
-//	if (msq == NULL)
-//	{
-//		printf("\tcannot alloc memory for new queue\n");
-//		return -1;
-//	}
-//
-//	INIT_LIST_HEAD(&msq->q_messages);
-//	INIT_LIST_HEAD(&msq->q_receivers);
-//	INIT_LIST_HEAD(&msq->q_senders);
-//
-//	return msg_buildid(1+(int) (10.0*rand()/(RAND_MAX+1.0)),1+(int) (10.0*rand()/(RAND_MAX+1.0)));
-//}
+	msq = (struct Lab_msq_queue *)malloc(sizeof(struct Lab_msg_queue));
+	if (msq == NULL)
+	{
+		printf("\tcannot alloc memory for new queue\n");
+		return -1;
+	}
+
+	INIT_LIST_HEAD(&msq->q_messages);
+	INIT_LIST_HEAD(&msq->q_receivers);
+	INIT_LIST_HEAD(&msq->q_senders);
+
+	return msg_buildid(1+(int) (10.0*rand()/(RAND_MAX+1.0)),1+(int) (10.0*rand()/(RAND_MAX+1.0)));
+} */
 
 struct Lab_msg_queue *Find_ipc_key(int key)
 {
@@ -273,7 +273,7 @@ int Lab_sys_msgsnd(int msg_type, int flag)
 void FreeMsg(struct msg_msg *msg)
 {
 	struct msg_msg *msg_h = root_msg_msg;
-	struct msg_msg *msg_prev = NULL;
+	//struct msg_msg *msg_prev = NULL;
 	
 	printf("\tfree memory\n");
 
