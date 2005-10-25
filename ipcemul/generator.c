@@ -50,7 +50,11 @@ int generator_procs(int begin, int end, int mode)
 		rand_gid = 1+(int) (10.0*rand()/(RAND_MAX+1.0));
 		rand_prio = 1+(int) (10.0*rand()/(RAND_MAX+1.0));
 		
-		result = fork_p(rand_pid, rand_uid, rand_gid, rand_prio);
+		if (0 != (result = fork_p(rand_pid, rand_uid, rand_gid, rand_prio))) {
+                    printf("error in creating process\n");
+                } else {
+                    printf("we have created process with pid=%d uid=%d gid=%d prio=%d\n",rand_pid,rand_uid,rand_gid,rand_prio);
+                }
 
 		end--;
 	}
