@@ -89,9 +89,10 @@ int sort_msg(int num)
 		tmp1 = root_msg_msg;
 		while (tmp1 != NULL)
 		{
-			printf("\t m_type = %ld  ", tmp1->m_type);
+			printf("\tm_type = %ld  ", tmp1->m_type);
 			tmp1 = tmp1->next;
 		}
+		printf("\nend sort\n");
 	}
 	else
 		printf("bad number\n");

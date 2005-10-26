@@ -62,7 +62,7 @@ int generator_procs(int begin, int end, int mode)
 	return 0;
 }
 
-int make_msgrcv(int pid, int m_type, int msg_flag)
+int make_msgrcv(int pid, int m_type, int msg_flag)  //make task to recive msg(with m_type and msg_flag)  by process with pid 
 {
 	struct process *proc;
 	

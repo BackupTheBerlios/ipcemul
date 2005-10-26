@@ -98,10 +98,8 @@ int main(int argc, char **argv)
 */    
 	generator_procs(1,5,1);
 	generator_msgs(2,1,5,4);
-
 	if (make_msgrcv(2, 3, 1) == -1) //pid, m_type, msg_flag
 		return -1;
-	
 	if (run() == -1)
 	{
 		return -1;

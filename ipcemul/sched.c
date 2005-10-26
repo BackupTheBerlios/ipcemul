@@ -39,23 +39,26 @@ int scheduler(void)
 
     if(prc->code == NULL)
     {
-        printf("NULL proc\n");
+        printf("NULL proc(there are no tasks for it)\n");
     }
     else
     {
         ExecCode(prc);
     }
     
-    printf("end work process with pid %d\n",prc->pid);
+    printf("end   work process with pid %d\n",prc->pid);
 
     return 0;
 }
 
 int run (void)
 {
+	printf("\n---------------------------------------------------\n");
+	printf("------------------Starting scheduler---------------\n");
+	printf("---------------------------------------------------\n");
 	while(number_of_tasks != 0)
 	{
-		printf("-----------number of tasks = %d--------\n", number_of_tasks);
+		printf("\n-----------number of tasks = %d--------", number_of_tasks);
 		if ((scheduler()) == 1)
 			break;
 	}

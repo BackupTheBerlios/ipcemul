@@ -34,7 +34,7 @@ extern struct msg_receiver *root_msg_reciever;
 struct process *current_proc = NULL;
 struct process *root_process = NULL;
 
-struct process *Find_process(int pid)
+struct process *Find_process(int pid)  //finding link to process with pid 
 {
     struct process *prc = root_process;
 
@@ -46,6 +46,19 @@ struct process *Find_process(int pid)
     }
 
     return NULL;
+}
+
+void print_task_type(int task_type,int pid)
+{
+	printf("\nProcess with pid=%d get new task. ",pid);
+	printf("Task number %d type ",number_of_tasks);
+	switch (task_type)
+	{
+		case 0:printf("msgsnd\n");break; 
+		case 1:printf("msgrcv\n");break;
+		case 2:printf("msgget\n");break;
+	}
+	return;
 }
 
 int fork_p(int pid, int uid, int gid, int prio)
@@ -119,7 +132,8 @@ int AddCode(int num,...)
     prc = current_proc;
 
     task->tsk = va_arg(ap,int);
-    printf("\ttask number %d\n", task->tsk);
+    print_task_type(task->tsk,current_proc->pid);  //printing number and  type of new task and process pid 
+   // printf("\ttask number %d\n", task->tsk);
     task->num_param = num - 1;
     for (i=1;i<num;i++)
     {
@@ -201,8 +215,8 @@ int ExecCode(struct process *prc)
     }
     else if(prc->code->tsk == MSGRCV)
     {
-        printf("bebore Sort\n");
-	sort_msg(0);	    
+        printf("before Sort\n");
+	sort_msg(0);
 	printf("exec msgrcv\n");
 	result = Lab_sys_msgrcv(prc->code->param[1], prc->code->param[2]);
         if(result < 0)
