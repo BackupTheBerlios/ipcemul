@@ -67,16 +67,18 @@ struct Lab_msg_queue *Find_ipc_key(int key)
 {
     struct Lab_msg_queue *ipc_k = root_msg_queue;
 
-    printf("\ttrying to find queue with key = %d\n",key);
+    printf("\tfinding queue with key = %d ------> ",key);
     while(ipc_k != NULL)
     {
         if (ipc_k->key == key)
         {
-            	printf("\twooow found queue\n");
+            	printf("found\n");
 		return ipc_k;
         }
         ipc_k = ipc_k->next;
     }
+
+    printf("not found\n");
 
     return NULL;
 }
@@ -88,7 +90,7 @@ int Lab_sys_msgget(int key, int flag)
 	if (key == IPC_PRIVATE)
 	{
 	    
-	    printf("\ti see key == IPC_PRIVATE\n");
+//	    printf("\t\n");
 	    ipc_ = (struct Lab_msg_queue *)malloc(sizeof(struct Lab_msg_queue));
 	    if(ipc_ == NULL)
 	    {
@@ -134,11 +136,11 @@ int Lab_sys_msgget(int key, int flag)
 		}
 	}
 	else if (flag & IPC_CREAT && flag & IPC_EXCL)
-		printf("\talready exist\n");
+		printf("\tqueue already exist\n");
 
 	Add2proc_dscrptr(ipc_->msgid); //adding  queue id to the descriptors stek of current process
 
-	printf("\t(added to proc) made queue with msgid = %d\n", ipc_->msgid);
+	printf("\tmake new queue with msgid = %d\n", ipc_->msgid);
 	return ipc_->msgid;
 }
 
@@ -153,16 +155,16 @@ int Lab_sys_msgrcv(long type, int flag)
 	struct process *prc = current_proc;
 	int time = 0;
 	
-	printf("\ttrying rcv msg with type = %ld\n", type);
+	printf("\trcving msg with type = %ld\n", type);
 	
 	mode = convert_mode(&type, flag);
-	printf("\tafter conver_mode\n");
+//	printf("\tafter conver_mode\n");
 
-	if (prc == NULL)
-	{
-		printf("\thmm....proc == NULL\n");
-		return -1;
-	}
+//	if (prc == NULL)
+//	{
+//		printf("\thmm....proc == NULL\n");
+//		return -1;
+//	}
 	queue = FindQueue(prc->dscrptr->descrptr);
 	if(queue == NULL)
 	{
@@ -170,7 +172,7 @@ int Lab_sys_msgrcv(long type, int flag)
 		return -1;
 	}
 	printf("\tQueue found with key=%d\n",queue->key);
-	printf("\t\tbegin find msg, time = 0\n");
+//	printf("\t\tbegin find msg, time = 0\n");
 	while(msg != NULL)
 	{
 		time++;
@@ -181,12 +183,12 @@ int Lab_sys_msgrcv(long type, int flag)
 		else
 			msg = msg->next;
 	}
-	printf("\t\ttotal time = %d\n", time);
+	printf("\t\ttotal time in search = %d\n", time);
 	if(msg == NULL)
 	{
 		if (flag & IPC_NOWAIT)
 			return 0;
-		printf("\tmsg == NULL\n");
+//		printf("\tmsg == NULL\n");
 		return 0;
 		//msg_r = (struct msg_receiver *)malloc(sizeof(struct msg_receiver));
 		//if(msg_r == NULL)
@@ -205,7 +207,7 @@ int Lab_sys_msgrcv(long type, int flag)
 	}
 	else
 	{
-		printf("\tpolychil soobschenie!!!))) yeahh baby))\n");
+		printf("\tResult Ok\n");
 		FreeMsg(msg);
 	}
 	
@@ -264,7 +266,7 @@ int Lab_sys_msgsnd(int msg_type, int flag)
 	root_msg_msg = msg;
 	
 
-	printf("\tmsg with type = %d\n send", msg_type);
+	printf("\tmsg with type = %d send\n", msg_type);
 	
 	return 0;
 }
@@ -273,9 +275,9 @@ void FreeMsg(struct msg_msg *msg)
 {
 	struct msg_msg *msg_h = root_msg_msg;
 	
-	printf("\tfree memory\n");
+	printf("exec free memory\n");
 
-	printf("\tbefore del\n");
+//	printf("\tbefore del\n");
 	while (msg_h != NULL)
 	{
 		printf("\t %ld", msg_h->m_type);
@@ -286,10 +288,10 @@ void FreeMsg(struct msg_msg *msg)
 
 	if ((msg_h->next == NULL) && (msg_h->m_type == msg->m_type))
 	{
-		printf("\tremove first and last msg\n");
+//		printf("\tremove first and last msg\n");
 		
 		root_msg_msg = msg_h->next;
-		printf("\tafter free(msg)\n");
+//		printf("\tafter free(msg)\n");
 	}
 	else
 	{
@@ -300,7 +302,7 @@ void FreeMsg(struct msg_msg *msg)
 	}
 
 	free(msg);
-	printf("\nafter if else\n");
+//	printf("\nafter if else\n");
 	msg_h = root_msg_msg;
 	printf("\tafter del\n");
 	while (msg_h != NULL)
@@ -320,15 +322,23 @@ int convert_mode(long* msgtyp, int msgflg)
 	*  msgtyp < 0 => get message with least type must be < abs(msgtype).  
 	*/
 	if((*msgtyp) == 0)
+	{
+		printf("\tSearch any msg\n");
 		return SEARCH_ANY;
+	}
 	if((*msgtyp) < 0)
 	{
 		(*msgtyp)*=-1;
+		printf("\tSearch less m_type\n");
 		return SEARCH_LESSEQUAL;
 	}
 	if(msgflg & MSG_EXCEPT)
+	{
+		printf("\tSearch not equal\n");
 		return SEARCH_NOTEQUAL;
+	}
 	
+	printf("\tSeach equal\n");
 	return SEARCH_EQUAL;
 }
 
@@ -336,19 +346,19 @@ struct Lab_msg_queue *FindQueue(int descriptor)
 {
 	struct Lab_msg_queue *que = root_msg_queue;
 	
-	printf("\ttrying find queue with descriptor = %d\n", descriptor);
+	printf("\tFinding queue with descriptor = %d --------> ", descriptor);
 	
 	while(que != NULL)
 	{
 		if(que->msgid == descriptor)
 		{
-			printf("\tfound queue!!)) \n");
+			printf(" ok \n");
 			return que;
 		}
 		que = que->next;
 	}
 	
-	printf("\tno queue with such descriptor((\n");
+	printf(" not found\n");
 	return NULL;
 }
 
