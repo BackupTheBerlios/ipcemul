@@ -100,6 +100,8 @@ int fork_p(int pid, int uid, int gid, int prio)
     {
         printf("tsk fork: ");
         printf("we have process with pid = %d\n",pid);
+
+	return (-1);
     }
 
     //printf("time create process with pid %d is %d\n",pid, *timeptr);
