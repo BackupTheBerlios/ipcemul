@@ -43,16 +43,41 @@ int generator_procs(int begin, int end, int mode)
 	int rand_pid;
 	int rand_uid, rand_gid, rand_prio;
 	
+	if (mode == 1) printf("in manual mode of creating processes\n");
+	
 	while(end >= begin)
 	{
-		rand_pid = end;//1+(int) (10.0*rand()/(RAND_MAX+1.0));
-		rand_uid = 1+(int) (10.0*rand()/(RAND_MAX+1.0));
-		rand_gid = 1+(int) (10.0*rand()/(RAND_MAX+1.0));
-		rand_prio = 1+(int) (10.0*rand()/(RAND_MAX+1.0));
+		if (mode == 0)
+		{
+			rand_pid = 1+(int) (10.0*rand()/(RAND_MAX+1.0));
+			rand_uid = 1+(int) (10.0*rand()/(RAND_MAX+1.0));
+			rand_gid = 1+(int) (10.0*rand()/(RAND_MAX+1.0));
+			rand_prio = 1+(int) (10.0*rand()/(RAND_MAX+1.0));
+		}
+		else if (mode == 1)
+		{
+//			printf("in manual mode\n");
+			
+			printf("Enter pid of process: ");
+			scanf("%d", &rand_pid);
+			
+			printf("Enter uid of process: ");
+			scanf("%d", &rand_uid);
+
+			printf("Enter gid of process: ");
+			scanf("%d", &rand_gid);
+
+			printf("Enter prio of process: ");
+			scanf("%d", &rand_prio);
+		}
 		
-		if (0 != (result = fork_p(rand_pid, rand_uid, rand_gid, rand_prio))) {
+		if (0 != (result = fork_p(rand_pid, rand_uid, rand_gid, rand_prio)))
+		{
                     printf("error in creating process\n");
-                } else {
+		    end++; //this give to user chance input another parameters
+                }
+		else
+		{
                     printf("we have created process with pid=%d uid=%d gid=%d prio=%d\n",rand_pid,rand_uid,rand_gid,rand_prio);
                 }
 
@@ -66,7 +91,7 @@ int make_msgrcv(int pid, int m_type, int msg_flag)  //make task to recive msg(wi
 {
 	struct process *proc;
 	
-	printf("in make_msgrcv\n");
+//	printf("in make_msgrcv\n");
 	if ((proc = Find_process(pid)) == NULL)
 	{
 		printf("no process with pid %d\n", pid);
@@ -74,7 +99,7 @@ int make_msgrcv(int pid, int m_type, int msg_flag)  //make task to recive msg(wi
 	}
 	else
 	{
-		printf("find proc with proc->pid = %d\n", proc->pid);
+//		printf("find proc with proc->pid = %d\n", proc->pid);
 		current_proc = proc;
 		if (Lab_msgrcv(m_type, msg_flag) == -1)
 		{
