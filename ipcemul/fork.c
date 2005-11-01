@@ -27,6 +27,7 @@
 
 int nr_running = 0;
 int number_of_tasks = 0; //gives to scheduler knowledge how much work
+int debug = 0; //4 debug
 
 extern struct Lab_msg_queue *root_msg_queue;
 extern struct msg_receiver *root_msg_reciever; 
@@ -38,13 +39,19 @@ struct process *Find_process(int pid)  //finding link to process with pid
 {
     struct process *prc = root_process;
 
+    if (debug == 1)
+	    printf("\tin Find_process\n\t");
     while(prc != NULL)
     {
-        if (prc->pid == pid)
+        if (debug == 1)
+		printf("  pid = %d", prc->pid);
+	if (prc->pid == pid)
             return prc;
         prc = prc->next;
     }
 
+    if (debug == 1)
+	    printf("\nnothing found\n");
     return NULL;
 }
 

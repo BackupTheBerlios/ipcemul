@@ -18,15 +18,29 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include <stdio.h>
+#include <string.h>
 #include "sched.h"
 #include "fork.h"
 #include "msg.h"
 //#include "sort.h"
 #include "generator.h"
 
+extern int debug;
+
 int main(int argc, char **argv)
 {
-    // process 1        
+	int mode;
+
+	// hmmmmm........why strcmp don't check any param to NULL????????? 
+	if (argv[1] != NULL)
+	{
+		if (strcmp(argv[1],"--debug") == 0)
+		{
+			printf("ho ho\n");
+			debug = 1;
+		}
+	}
+	// process 1        
 /*    if(fork_p(1,1,1,2) < 0)
     {
       printf("cannot create proc\n");
@@ -96,7 +110,7 @@ int main(int argc, char **argv)
         return -1;
     }
 */    
-	generator_procs(1,5,1);
+	generator_procs(1,5,0);
 	generator_msgs(2,1,5,4);
 	if (make_msgrcv(2, 3, 1) == -1) //pid, m_type, msg_flag
 		return -1;
