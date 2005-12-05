@@ -73,7 +73,7 @@ struct msg_msg
 	struct list_head m_list;  //list of messages
 	long  m_type;            //type of message
 
-	struct msg_msgseg* next;
+	struct msg_msg *next;
 //=======
 //	struct msg_msg *next; 
         char * text;

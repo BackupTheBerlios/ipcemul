@@ -1,6 +1,6 @@
-#include<stdio.h>
-#include"msg.h"
-#include"fork.h"
+#include <stdio.h>
+#include "msg.h"
+#include "fork.h"
 
 //extern struct Lab_msg_queue *root_msg_queue;
 extern struct msg_msg *root_msg_msg;
