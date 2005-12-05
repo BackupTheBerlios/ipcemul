@@ -32,6 +32,27 @@ struct list_head
 	struct list_head *next, *prev;
 };
 
+//struct msg_msgseg
+//{
+//	struct msg_msgseg* next;
+	/* the next part of the message follows immediately */
+//};
+
+/* used by in-kernel data structures */
+struct kern_ipc_perm
+{
+	//spinlock_t      lock;
+	//int             deleted;
+	int key;//key_t           key;
+	int uid;//uid_t           uid;
+	int gid;//gid_t           gid;
+	//uid_t           cuid;
+	//gid_t           cgid;
+	int mode;//mode_t          mode; 
+	//unsigned long   seq;
+	//void            *security;
+};
+
 /* one msq_queue structure for each present queue on the system */
 struct Lab_msg_queue
 {
@@ -47,9 +68,17 @@ struct Lab_msg_queue
 /* one msg_msg structure for each message */
 struct msg_msg
 {
-	struct msg_msg *next; 
+//<<<<<<< msg.h
+	//struct msg_msg *next;
+	struct list_head m_list;  //list of messages
+	long  m_type;            //type of message
+
+	struct msg_msgseg* next;
+//=======
+//	struct msg_msg *next; 
         char * text;
-	long  m_type;
+//	long  m_type;
+//>>>>>>> 1.10
 };
 
 /* one msg_receiver structure for each sleeping receiver */

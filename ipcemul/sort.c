@@ -52,17 +52,17 @@ int sort_msg(int num)
 	int temp;
 	int sorted = 1;
 	
-	printf("in Sort\n");
+	printf("exec Sort\n");
 	
 	if (num == 0)
 	{
 		if (tmp1 != NULL)
 		{
 			tmp2 = tmp1->next;
-			printf("\tin make_sort with num 0\n");
+
 			while (must_sort)
 			{
-				printf("\tin main circle - must sort\n");
+//				printf("\tin main circle - must sort\n");
 				if(sorted)
 				{
 					sorted = 0;
@@ -70,7 +70,7 @@ int sort_msg(int num)
 					tmp2 = tmp1->next;
 					while(tmp2 != NULL)
 					{
-						printf("\t\tin second circle\n");
+//						printf("\t\tin second circle\n");
 						if (tmp1->m_type > tmp2->m_type)
 						{
 							temp = tmp1->m_type;
@@ -87,12 +87,13 @@ int sort_msg(int num)
 			}
 		}
 		tmp1 = root_msg_msg;
+		printf("\tafter sorting\n");
 		while (tmp1 != NULL)
 		{
 			printf("\tm_type = %ld  ", tmp1->m_type);
 			tmp1 = tmp1->next;
 		}
-		printf("\nend sort\n");
+//		printf("\nend sort\n");
 	}
 	else
 		printf("bad number\n");

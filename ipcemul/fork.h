@@ -63,6 +63,9 @@ struct process
 
 #define MSG_EXCEPT      020000  /* recv any msg except of specified type.*/
 #define IPC_NOWAIT 00004000   /* return error on wait */
+
+//int debug = 0; //4 debug
+
 int AddCode(int num,...);
 struct process *Find_max_prio(void);
 int fork_p(int pid, int uid, int gid, int prio);

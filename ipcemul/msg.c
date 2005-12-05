@@ -63,6 +63,48 @@ static int Lab_newque(int key, int msgflg)
 	return msg_buildid(1+(int) (10.0*rand()/(RAND_MAX+1.0)),1+(int) (10.0*rand()/(RAND_MAX+1.0)));
 } */
 
+/*static int newque (key_t key, int msgflg)
+{
+	int id;
+	int retval;
+	struct msg_queue *msq;
+	 
+	msq = (struct msq*)malloc(sizeof(struct msg_queue));//msq  = ipc_rcu_alloc(sizeof(*msq));
+	if (!msq) 
+		return -ENOMEM;
+	 
+	msq->q_perm.mode = (msgflg & S_IRWXUGO);
+	msq->q_perm.key = key;
+	 
+	//msq->q_perm.security = NULL; //we not use security
+	retval = security_msg_queue_alloc(msq);
+	if (retval)
+	{
+		ipc_rcu_putref(msq);
+		return retval;
+	}
+	 
+	id = ipc_addid(&msg_ids, &msq->q_perm, msg_ctlmni);
+	if(id == -1)
+	{
+		security_msg_queue_free(msq);
+		ipc_rcu_putref(msq);
+		return -ENOSPC;
+	}
+	
+	msq->q_stime = msq->q_rtime = 0;
+	msq->q_ctime = get_seconds();
+	msq->q_cbytes = msq->q_qnum = 0;
+	msq->q_qbytes = msg_ctlmnb;
+	msq->q_lspid = msq->q_lrpid = 0;
+	INIT_LIST_HEAD(&msq->q_messages);
+	INIT_LIST_HEAD(&msq->q_receivers);
+	INIT_LIST_HEAD(&msq->q_senders);
+	msg_unlock(msq);
+	
+	return msg_buildid(id,msq->q_perm.seq);
+}*/
+
 struct Lab_msg_queue *Find_ipc_key(int key)
 {
     struct Lab_msg_queue *ipc_k = root_msg_queue;
@@ -83,9 +125,10 @@ struct Lab_msg_queue *Find_ipc_key(int key)
     return NULL;
 }
 
-int Lab_sys_msgget(int key, int flag)
+int Lab_sys_msgget(int key, int msgflag)
 {
 	struct Lab_msg_queue *ipc_ = NULL;
+	int id, ret;// = -EPERM;
 
 	if (key == IPC_PRIVATE)
 	{
@@ -109,10 +152,11 @@ int Lab_sys_msgget(int key, int flag)
 	    
 	    ipc_->next = root_msg_queue;
 	    root_msg_queue = ipc_;
+		//ret = newque(key, msgflg);
     	}
 	else if ((ipc_ = Find_ipc_key(key)) == NULL)
 	{
-		if (flag & IPC_CREAT)
+		if (msgflag & IPC_CREAT)
 		{
 			ipc_ = (struct Lab_msg_queue *)malloc(sizeof(struct Lab_msg_queue));
 			if(ipc_ == NULL)
@@ -135,7 +179,7 @@ int Lab_sys_msgget(int key, int flag)
 			return -1;
 		}
 	}
-	else if (flag & IPC_CREAT && flag & IPC_EXCL)
+	else if (msgflag & IPC_CREAT && msgflag & IPC_EXCL)
 		printf("\tqueue already exist\n");
 
 	Add2proc_dscrptr(ipc_->msgid); //adding  queue id to the descriptors stek of current process
