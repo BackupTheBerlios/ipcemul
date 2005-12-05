@@ -30,7 +30,7 @@ extern int debug;
 int main(int argc, char **argv)
 {
 	int mode;
-
+/*
 	// hmmmmm........why strcmp don't check any param to NULL????????? 
 	if (argv[1] != NULL)
 	{
@@ -41,7 +41,7 @@ int main(int argc, char **argv)
 		}
 	}
 	// process 1        
-/*    if(fork_p(1,1,1,2) < 0)
+    if(fork_p(1,1,1,2) < 0)
     {
       printf("cannot create proc\n");
         return -1;
@@ -63,7 +63,7 @@ int main(int argc, char **argv)
         printf("mistake in msgget\n");
         return -1;
     }
-    if(Lab_msgsnd(3,0) < 0)
+    if(Lab_msgsnd(3,0,"hello") < 0)
     {
         printf("mistake in msgsnd\n");
         return -1;
@@ -86,7 +86,7 @@ int main(int argc, char **argv)
         printf("mistake in msgget\n");
         return -1;
     }
-    if(Lab_msgsnd(3,0) < 0)
+    if(Lab_msgsnd(3,0,"hi man") < 0)
     {
 	    printf("mistake in msgsnd\n");
 	    return -1;
@@ -109,11 +109,12 @@ int main(int argc, char **argv)
         printf("cannot create proc\n");
         return -1;
     }
-*/    
+/*/    
 	generator_procs(1,5,0);
-	generator_msgs(2,1,5,4);
-	if (make_msgrcv(2, 3, 1) == -1) //pid, m_type, msg_flag
+	generator_msgs(3,1,5,4);
+	if (make_msgrcv(4, 3, 1) == -1) //pid, m_type, msg_flag
 		return -1;
+
 	if (run() == -1)
 	{
 		return -1;

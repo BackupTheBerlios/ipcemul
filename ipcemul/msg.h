@@ -48,6 +48,7 @@ struct Lab_msg_queue
 struct msg_msg
 {
 	struct msg_msg *next; 
+        char * text;
 	long  m_type;
 };
 
@@ -72,10 +73,10 @@ struct msg_receiver
 struct Lab_msg_queue *FindQueue(int descriptor);
 void FreeMsg(struct msg_msg *msg);
 int Lab_msgget(int key, int flag);
-int Lab_msgsnd(long msg_type, int msg_flag);
+int Lab_msgsnd(long msg_type, int msg_flag,char *text);
 int Lab_msgrcv(long msg_type, int msg_flag);
 int Lab_sys_msgrcv(long type, int flag);
-int Lab_sys_msgsnd(int msg_type, int flag);
+int Lab_sys_msgsnd(int msg_type, int flag,char text[20]);
 int Lab_sys_msgget(int key, int flag);
 int convert_mode(long *msgtyp, int msgflg);
 int testmsg(struct msg_msg* msg,long type,int mode);

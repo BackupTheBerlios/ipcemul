@@ -24,7 +24,7 @@
 #include "fork.h"
 //#include "util.h"
 #include "list.h"
-
+#include <string.h>
 struct msg_sender
 {
 	struct list_head list;
@@ -208,6 +208,7 @@ int Lab_sys_msgrcv(long type, int flag)
 	else
 	{
 		printf("\tResult Ok\n");
+                printf("Recived message:%s\n",msg->text);
 		FreeMsg(msg);
 	}
 	
@@ -237,7 +238,7 @@ int testmsg(struct msg_msg* msg,long type,int mode)
 	return 0;
 }
 
-int Lab_sys_msgsnd(int msg_type, int flag)
+int Lab_sys_msgsnd(int msg_type, int flag,char*text)
 {
 //	struct Lab_msg_queue *msq = NULL;
 	struct msg_msg *msg = NULL;
@@ -247,7 +248,7 @@ int Lab_sys_msgsnd(int msg_type, int flag)
 		printf("you must use msg type > 1\n");
 		exit(-1);
 	}
-	
+/*	
 //	if ((msq = FindQueue(current_proc->dscrptr->descrptr)) == NULL)
 //	{
 //		printf("\tno such queue\n");
@@ -255,6 +256,7 @@ int Lab_sys_msgsnd(int msg_type, int flag)
 //	}
 
 //	if ()
+*/
 	msg = (struct msg_msg *)malloc(sizeof(struct msg_msg));
 	if(msg == NULL)
 	{
@@ -262,6 +264,7 @@ int Lab_sys_msgsnd(int msg_type, int flag)
 		return -1;
 	}
 	msg->m_type = msg_type;
+        msg->text=text;
 	msg->next = root_msg_msg;
 	root_msg_msg = msg;
 	
@@ -285,17 +288,15 @@ void FreeMsg(struct msg_msg *msg)
 	}
 	printf("\n");
 	msg_h = root_msg_msg;
-
-	if ((msg_h->next == NULL) && (msg_h->m_type == msg->m_type))
+	if ((msg_h->next == NULL) && (msg_h == msg))
 	{
 //		printf("\tremove first and last msg\n");
-		
 		root_msg_msg = msg_h->next;
 //		printf("\tafter free(msg)\n");
 	}
 	else
 	{
-		while(msg_h->next->m_type != msg->m_type)
+		while(msg_h->next != msg)
 			msg_h = msg_h->next;
 	
 		msg_h->next = msg->next;
@@ -335,9 +336,9 @@ int convert_mode(long* msgtyp, int msgflg)
 	if(msgflg & MSG_EXCEPT)
 	{
 		printf("\tSearch not equal\n");
+
 		return SEARCH_NOTEQUAL;
 	}
-	
 	printf("\tSeach equal\n");
 	return SEARCH_EQUAL;
 }
@@ -364,15 +365,19 @@ struct Lab_msg_queue *FindQueue(int descriptor)
 
 int Lab_msgget(int key, int flag)
 {
-	return AddCode(3, MSGGET, key, flag);
+    return AddCode(3, MSGGET, key, flag);
 }
 
-int Lab_msgsnd(long msg_type, int msg_flag)
+int Lab_msgsnd(long msg_type, int msg_flag,char text[20])
 {
-	return AddCode(3, MSGSND, msg_type, msg_flag);
+    char *text2;
+    text2=(char *)malloc(sizeof(char)*20);
+    strcpy(text2,text);
+
+    return AddCode(4, MSGSND, msg_type, msg_flag,text2);
 }
 
 int Lab_msgrcv(long msg_type, int msg_flag)
 {
-	return AddCode(3, MSGRCV, msg_type, msg_flag);
+    return AddCode(3, MSGRCV, msg_type, msg_flag);
 }

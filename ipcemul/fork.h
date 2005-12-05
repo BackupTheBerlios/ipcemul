@@ -26,6 +26,7 @@ struct tsk
 	int tsk; //0 msgsnd, 1 msgrcv, 2 msgget
 	int num_param;
 	int param[5];
+        char *text;
 	struct tsk *next;
 };
 

@@ -28,7 +28,7 @@ int generator_msgs(int pid, int begin, int end, int key)
 		
 		while (end >= begin)
 		{
-			Lab_msgsnd(end, 1);		
+			Lab_msgsnd(end, 1,"its genrated msg");		
 		
 			end--;
 		}

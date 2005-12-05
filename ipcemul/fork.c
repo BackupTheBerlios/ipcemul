@@ -139,19 +139,33 @@ int AddCode(int num,...)
 	number_of_tasks++;
     //prc = Find_process(*(++pp));
     prc = current_proc;
-
     task->tsk = va_arg(ap,int);
     print_task_type(task->tsk,current_proc->pid);  //printing number and  type of new task and process pid 
    // printf("\ttask number %d\n", task->tsk);
     task->num_param = num - 1;
-    for (i=1;i<num;i++)
+    for(i=1;i<num-1;i++)
     {
         task->param[i]=va_arg(ap,int);
 	printf("\t\tadded param %d = %d\n",i, task->param[i]);
     }
+//this is not absolutly good thing but it works
+//if this sending task then copy link to text else copy last int param
+//also it can be we can write it like this
+//if (num==4). maybe it will be better
+    if (task->tsk==MSGSND)
+        {
+        task->text=va_arg(ap,char*);
+        printf("\t\tadded msg text  = %s\n", task->text);
+        }
+    else
+        {
+            task->text=NULL;
+            task->param[i]=va_arg(ap,int);
+        }
     task->next = NULL;
 	//adding new task at the end of stack
     tsk_temp = prc->code;
+    va_end(ap);
     while (tsk_temp != NULL)
     {
         if(tsk_temp->next == NULL)
@@ -163,9 +177,6 @@ int AddCode(int num,...)
     }
 	//if there are no tasks this will be the first
     prc->code = task;
-
-    va_end(ap);
-    
     return 0;
 }
 
@@ -176,7 +187,7 @@ void RemoveCode(struct process *prc)
     printf("\tfunct execed, del it\n");
     prc->code = prc->code->next;
     free(tsk_h);
-
+    
     number_of_tasks--;
 }
 
@@ -210,11 +221,10 @@ int Add2proc_dscrptr(int msgid)
 int ExecCode(struct process *prc)
 {
     int result;
-
     if(prc->code->tsk == MSGSND)
     {
         printf("exec msgsnd\n");
-	result = Lab_sys_msgsnd(prc->code->param[1], prc->code->param[2]);
+	result = Lab_sys_msgsnd(prc->code->param[1], prc->code->param[2],prc->code->text);
         if(result < 0)
         {
             printf("mistake in msgrcv\n");
@@ -251,6 +261,7 @@ int ExecCode(struct process *prc)
     }
     else
     {
+
         return -1;
     }
 
