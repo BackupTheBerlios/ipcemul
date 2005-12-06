@@ -27,8 +27,8 @@
 #include <string.h>
 struct msg_sender
 {
-	struct list_head list;
-	struct task_struct* tsk;
+        struct list_head list;
+        struct task_struct* tsk;
 };
 
 struct Lab_msg_queue *root_msg_queue = NULL;
@@ -40,71 +40,6 @@ struct msg_receiver *root_msg_reciever = NULL;
 extern struct process *current_proc;
 extern int number_of_tasks;
 
-/* #define msg_buildid(id, seq) \
-	ipc_buildid(&msg_ids, id, seq)
-
-static int Lab_newque(int key, int msgflg)
-{
-	int id;
-	int retval;
-	struct Lab_msg_queue *msq = NULL;
-
-	msq = (struct Lab_msq_queue *)malloc(sizeof(struct Lab_msg_queue));
-	if (msq == NULL)
-	{
-		printf("\tcannot alloc memory for new queue\n");
-		return -1;
-	}
-
-	INIT_LIST_HEAD(&msq->q_messages);
-	INIT_LIST_HEAD(&msq->q_receivers);
-	INIT_LIST_HEAD(&msq->q_senders);
-
-	return msg_buildid(1+(int) (10.0*rand()/(RAND_MAX+1.0)),1+(int) (10.0*rand()/(RAND_MAX+1.0)));
-} */
-
-/*static int newque (key_t key, int msgflg)
-{
-	int id;
-	int retval;
-	struct msg_queue *msq;
-	 
-	msq = (struct msq*)malloc(sizeof(struct msg_queue));//msq  = ipc_rcu_alloc(sizeof(*msq));
-	if (!msq) 
-		return -ENOMEM;
-	 
-	msq->q_perm.mode = (msgflg & S_IRWXUGO);
-	msq->q_perm.key = key;
-	 
-	//msq->q_perm.security = NULL; //we not use security
-	retval = security_msg_queue_alloc(msq);
-	if (retval)
-	{
-		ipc_rcu_putref(msq);
-		return retval;
-	}
-	 
-	id = ipc_addid(&msg_ids, &msq->q_perm, msg_ctlmni);
-	if(id == -1)
-	{
-		security_msg_queue_free(msq);
-		ipc_rcu_putref(msq);
-		return -ENOSPC;
-	}
-	
-	msq->q_stime = msq->q_rtime = 0;
-	msq->q_ctime = get_seconds();
-	msq->q_cbytes = msq->q_qnum = 0;
-	msq->q_qbytes = msg_ctlmnb;
-	msq->q_lspid = msq->q_lrpid = 0;
-	INIT_LIST_HEAD(&msq->q_messages);
-	INIT_LIST_HEAD(&msq->q_receivers);
-	INIT_LIST_HEAD(&msq->q_senders);
-	msg_unlock(msq);
-	
-	return msg_buildid(id,msq->q_perm.seq);
-}*/
-
 struct Lab_msg_queue *Find_ipc_key(int key)
 {
     struct Lab_msg_queue *ipc_k = root_msg_queue;
@@ -114,8 +49,8 @@ struct Lab_msg_queue *Find_ipc_key(int key)
     {
         if (ipc_k->key == key)
         {
-            	printf("found\n");
-		return ipc_k;
+                printf("found\n");
+                return ipc_k;
         }
         ipc_k = ipc_k->next;
     }
@@ -127,140 +62,141 @@ struct Lab_msg_queue *Find_ipc_key(int key)
 
 int Lab_sys_msgget(int key, int msgflag)
 {
-	struct Lab_msg_queue *ipc_ = NULL;
-	int id, ret;// = -EPERM;
+        struct Lab_msg_queue *ipc_ = NULL;
+        int id, ret;// = -EPERM;
 
-	if (key == IPC_PRIVATE)
-	{
-	    
-//	    printf("\t\n");
-	    ipc_ = (struct Lab_msg_queue *)malloc(sizeof(struct Lab_msg_queue));
-	    if(ipc_ == NULL)
-	    {
-		printf("\tcannot alloc mem\n");
-		return -1;
-	    }
+        if (key == IPC_PRIVATE)
+        {
 
-	    ipc_->key = key;
-	    INIT_LIST_HEAD(&ipc_->q_messages);
-	    INIT_LIST_HEAD(&ipc_->q_receivers);
-	    INIT_LIST_HEAD(&ipc_->q_senders);
-	    ipc_->msgid = 1+(int) (10.0*rand()/(RAND_MAX+1.0));
-	    
-	    while (FindQueue(ipc_->msgid) != NULL)
-		    ipc_->msgid = 1+(int) (10.0*rand()/(RAND_MAX+1.0));
-	    
-	    ipc_->next = root_msg_queue;
-	    root_msg_queue = ipc_;
-		//ret = newque(key, msgflg);
-    	}
-	else if ((ipc_ = Find_ipc_key(key)) == NULL)
-	{
-		if (msgflag & IPC_CREAT)
-		{
-			ipc_ = (struct Lab_msg_queue *)malloc(sizeof(struct Lab_msg_queue));
-			if(ipc_ == NULL)
-			{
-				printf("\tcannot alloc mem\n");
-				return -1;
-			}
+//          printf("\t\n");
+            ipc_ = (struct Lab_msg_queue *)malloc(sizeof(struct Lab_msg_queue));
+            if(ipc_ == NULL)
+            {
+                printf("\tcannot alloc mem\n");
+                return -1;
+            }
 
-			ipc_->key = key;
-			INIT_LIST_HEAD(&ipc_->q_messages);
-			INIT_LIST_HEAD(&ipc_->q_receivers);
-			INIT_LIST_HEAD(&ipc_->q_senders);
-			ipc_->msgid = 1+(int) (10.0*rand()/(RAND_MAX+1.0));
-			ipc_->next = root_msg_queue;
-			root_msg_queue = ipc_;
-		}
-		else
-		{
-			printf("\t no such file or dir\n");
-			return -1;
-		}
-	}
-	else if (msgflag & IPC_CREAT && msgflag & IPC_EXCL)
-		printf("\tqueue already exist\n");
+            ipc_->key = key;
+            INIT_LIST_HEAD(&ipc_->q_messages);
+            INIT_LIST_HEAD(&ipc_->q_receivers);
+            INIT_LIST_HEAD(&ipc_->q_senders);
+            ipc_->msgid = 1+(int) (10.0*rand()/(RAND_MAX+1.0));
 
-	Add2proc_dscrptr(ipc_->msgid); //adding  queue id to the descriptors stek of current process
+            while (FindQueue(ipc_->msgid) != NULL)
+                    ipc_->msgid = 1+(int) (10.0*rand()/(RAND_MAX+1.0));
 
-	printf("\tmake new queue with msgid = %d\n", ipc_->msgid);
-	return ipc_->msgid;
+            ipc_->next = root_msg_queue;
+            root_msg_queue = ipc_;
+                //ret = newque(key, msgflg);
+        }
+        else if ((ipc_ = Find_ipc_key(key)) == NULL)
+        {
+                if (msgflag & IPC_CREAT)
+                {
+                        ipc_ = (struct Lab_msg_queue *)malloc(sizeof(struct Lab_msg_queue));
+                        if(ipc_ == NULL)
+                        {
+                                printf("\tcannot alloc mem\n");
+                                return -1;
+                        }
+
+                        ipc_->key = key;
+                        INIT_LIST_HEAD(&ipc_->q_messages);
+                        INIT_LIST_HEAD(&ipc_->q_receivers);
+                        INIT_LIST_HEAD(&ipc_->q_senders);
+                        ipc_->msgid = 1+(int) (10.0*rand()/(RAND_MAX+1.0));
+                        ipc_->next = root_msg_queue;
+                        root_msg_queue = ipc_;
+                }
+                else
+                {
+                        printf("\t no such file or dir\n");
+                        return -1;
+                }
+        }
+        else if (msgflag & IPC_CREAT && msgflag & IPC_EXCL)
+                printf("\tqueue already exist\n");
+
+        Add2proc_dscrptr(ipc_->msgid); //adding  queue id to the descriptors stek of current process
+
+        printf("\tmake new queue with msgid = %d\n", ipc_->msgid);
+        return ipc_->msgid;
 }
 
 int Lab_sys_msgrcv(long type, int flag)
 {
-	int mode;
-	struct Lab_msg_queue *queue = NULL;
-	struct msg_msg *msg = root_msg_msg;
-//	struct list_head *list = NULL;
-//	struct msg_receiver *msg_r;
-	int result;
-	struct process *prc = current_proc;
-	int time = 0;
-	
-	printf("\trcving msg with type = %ld\n", type);
-	
-	mode = convert_mode(&type, flag);
-//	printf("\tafter conver_mode\n");
+        int mode;
+        struct Lab_msg_queue *queue = NULL;
+        struct msg_msg *msg = root_msg_msg;
+//      struct list_head *list = NULL;
+//      struct msg_receiver *msg_r;
+        int result;
+        struct process *prc = current_proc;
+        int time = 0;
 
-//	if (prc == NULL)
-//	{
-//		printf("\thmm....proc == NULL\n");
-//		return -1;
-//	}
-	queue = FindQueue(prc->dscrptr->descrptr);
-	if(queue == NULL)
-	{
-		printf("cannot find queue with id %d\n", prc->dscrptr->descrptr);
-		return -1;
-	}
-	printf("\tQueue found with key=%d\n",queue->key);
-//	printf("\t\tbegin find msg, time = 0\n");
-	while(msg != NULL)
-	{
-		time++;
-		current_proc->search_msg++;
-		result = testmsg(msg,current_proc->code->param[1],mode);
-		if(result == 1)
-			break;
-		else
-			msg = msg->next;
-	}
-	printf("\t\ttotal time in search = %d\n", time);
-	if(msg == NULL)
-	{
-		if (flag & IPC_NOWAIT)
-			return 0;
-//		printf("\tmsg == NULL\n");
-		return 0;
-		//msg_r = (struct msg_receiver *)malloc(sizeof(struct msg_receiver));
-		//if(msg_r == NULL)
-		//{
-		//	printf("cannot alloc mem\n");
-		//	return -1;
-		//}
-		//printf("\tadd proc to msg_rcv\n");
-		//current_proc->run = 0; //go to sleep
-		//msg_r->r_prc = current_proc;
-		//msg_r->r_mode = mode;
-		//msg_r->r_msgtype = current_proc->code->param[1];
-		//msg_r->next = root_msg_reciever;
-		//root_msg_reciever = msg_r;
-		//return 1;
-	}
-	else
-	{
-		printf("\tResult Ok\n");
+        printf("\trcving msg with type = %ld\n", type);
+
+        mode = convert_mode(&type, flag);
+//      printf("\tafter conver_mode\n");
+
+      if (prc->dscrptr == NULL)
+      {
+              printf("\thmm....dscrptr == NULL\n");
+              exit(-1);
+      }
+        queue = FindQueue(prc->dscrptr->descrptr);
+        if(queue == NULL)
+        {
+                printf("cannot find queue with id %d\n", prc->dscrptr->descrptr);
+                return -1;
+        }
+        printf("\tQueue found with key=%d\n",queue->key);
+//      printf("\t\tbegin find msg, time = 0\n");
+        while(msg != NULL)
+        {
+                time++;
+                current_proc->search_msg++;
+                result = testmsg(msg,current_proc->code->param[1],mode);
+                if(result == 1)
+                        break;
+                else
+                        msg = msg->next;
+        }
+        printf("\t\ttotal time in search = %d\n", time);
+        if(msg == NULL)
+        {
+                if (flag & IPC_NOWAIT)
+                        return 0;
+//              printf("\tmsg == NULL\n");
+                return 0;
+                //msg_r = (struct msg_receiver *)malloc(sizeof(struct msg_receiver));
+                //if(msg_r == NULL)
+                //{
+                //      printf("cannot alloc mem\n");
+                //      return -1;
+                //}
+                //printf("\tadd proc to msg_rcv\n");
+                //current_proc->run = 0; //go to sleep
+                //msg_r->r_prc = current_proc;
+                //msg_r->r_mode = mode;
+                //msg_r->r_msgtype = current_proc->code->param[1];
+                //msg_r->next = root_msg_reciever;
+                //root_msg_reciever = msg_r;
+                //return 1;
+        }
+        else
+        {
+                printf("\tResult Ok\n");
                 printf("Recived message:%s\n",msg->text);
-		FreeMsg(msg);
-	}
-	
-	return 0;
+                FreeMsg(msg);
+        }
+
+        return 0;
 }
 
 int testmsg(struct msg_msg* msg,long type,int mode)
 {
+//	OneStringToProtocol("\t\tin testmsg");
 	switch(mode)
 	{
 		case SEARCH_ANY:
@@ -278,133 +214,132 @@ int testmsg(struct msg_msg* msg,long type,int mode)
 				return 1;
 			break;
 	}
-	
 	return 0;
 }
 
 int Lab_sys_msgsnd(int msg_type, int flag,char*text)
 {
-//	struct Lab_msg_queue *msq = NULL;
-	struct msg_msg *msg = NULL;
-	
-	if (msg_type < 1)
-	{
-		printf("you must use msg type > 1\n");
-		exit(-1);
-	}
-/*	
-//	if ((msq = FindQueue(current_proc->dscrptr->descrptr)) == NULL)
-//	{
-//		printf("\tno such queue\n");
-//		return -1;
-//	}
+//      struct Lab_msg_queue *msq = NULL;
+        struct msg_msg *msg = NULL;
 
-//	if ()
+        if (msg_type < 1)
+        {
+                printf("you must use msg type > 1\n");
+                exit(-1);
+        }
+/*      
+//      if ((msq = FindQueue(current_proc->dscrptr->descrptr)) == NULL)
+//      {
+//              printf("\tno such queue\n");
+//              return -1;
+//      }
+
+//      if ()
 */
-	msg = (struct msg_msg *)malloc(sizeof(struct msg_msg));
-	if(msg == NULL)
-	{
-		printf("cannot alloc mem\n");
-		return -1;
-	}
-	msg->m_type = msg_type;
+        msg = (struct msg_msg *)malloc(sizeof(struct msg_msg));
+        if(msg == NULL)
+        {
+                printf("cannot alloc mem\n");
+                return -1;
+        }
+        msg->m_type = msg_type;
         msg->text=text;
-	msg->next = root_msg_msg;
-	root_msg_msg = msg;
-	
+        msg->next = root_msg_msg;
+        root_msg_msg = msg;
 
-	printf("\tmsg with type = %d send\n", msg_type);
-	
-	return 0;
+
+        printf("\tmsg with type = %d send\n", msg_type);
+
+        return 0;
 }
 
 void FreeMsg(struct msg_msg *msg)
 {
-	struct msg_msg *msg_h = root_msg_msg;
-	
-	printf("exec free memory\n");
+        struct msg_msg *msg_h = root_msg_msg;
 
-//	printf("\tbefore del\n");
-	while (msg_h != NULL)
-	{
-		printf("\t %ld", msg_h->m_type);
-		msg_h = msg_h->next;
-	}
-	printf("\n");
-	msg_h = root_msg_msg;
-	if ((msg_h->next == NULL) && (msg_h == msg))
-	{
-//		printf("\tremove first and last msg\n");
-		root_msg_msg = msg_h->next;
-//		printf("\tafter free(msg)\n");
-	}
-	else
-	{
-		while(msg_h->next != msg)
-			msg_h = msg_h->next;
-	
-		msg_h->next = msg->next;
-	}
+        printf("exec free memory\n");
 
-	free(msg);
-//	printf("\nafter if else\n");
-	msg_h = root_msg_msg;
-	printf("\tafter del\n");
-	while (msg_h != NULL)
-	{
-		printf("\t %ld", msg_h->m_type);
-		msg_h = msg_h->next;
-	}
-	printf("\n");			
+//      printf("\tbefore del\n");
+        while (msg_h != NULL)
+        {
+                printf("\t %ld", msg_h->m_type);
+                msg_h = msg_h->next;
+        }
+        printf("\n");
+        msg_h = root_msg_msg;
+        if ((msg_h->next == NULL) || (msg_h == msg))
+        {
+//              printf("\tremove first and last msg\n");
+                root_msg_msg = msg_h->next;
+//              printf("\tafter free(msg)\n");
+        }
+        else
+        {
+                while(msg_h->next != msg)
+                        msg_h = msg_h->next;
+
+                msg_h->next = msg->next;
+        }
+
+        free(msg);
+//      printf("\nafter if else\n");
+        msg_h = root_msg_msg;
+        printf("\tafter del\n");
+        while (msg_h != NULL)
+        {
+                printf("\t %ld", msg_h->m_type);
+                msg_h = msg_h->next;
+        }
+        printf("\n");
 }
 
 int convert_mode(long* msgtyp, int msgflg)
 {
-	/* 
-	*  find message of correct type.
-	*  msgtyp = 0 => get first.
-	*  msgtyp > 0 => get first message of matching type.
-	*  msgtyp < 0 => get message with least type must be < abs(msgtype).  
-	*/
-	if((*msgtyp) == 0)
-	{
-		printf("\tSearch any msg\n");
-		return SEARCH_ANY;
-	}
-	if((*msgtyp) < 0)
-	{
-		(*msgtyp)*=-1;
-		printf("\tSearch less m_type\n");
-		return SEARCH_LESSEQUAL;
-	}
-	if(msgflg & MSG_EXCEPT)
-	{
-		printf("\tSearch not equal\n");
+        /* 
+        *  find message of correct type.
+        *  msgtyp = 0 => get first.
+        *  msgtyp > 0 => get first message of matching type.
+        *  msgtyp < 0 => get message with least type must be < abs(msgtype).  
+        */
+        if((*msgtyp) == 0)
+        {
+                printf("\tSearch any msg\n");
+                return SEARCH_ANY;
+        }
+        if((*msgtyp) < 0)
+        {
+                (*msgtyp)*=-1;
+                printf("\tSearch less m_type\n");
+                return SEARCH_LESSEQUAL;
+        }
+        if(msgflg & MSG_EXCEPT)
+        {
+                printf("\tSearch not equal\n");
 
-		return SEARCH_NOTEQUAL;
-	}
-	printf("\tSeach equal\n");
-	return SEARCH_EQUAL;
+                return SEARCH_NOTEQUAL;
+        }
+        printf("\tSeach equal\n");
+        return SEARCH_EQUAL;
 }
 
 struct Lab_msg_queue *FindQueue(int descriptor)
 {
-	struct Lab_msg_queue *que = root_msg_queue;
-	
-	printf("\tFinding queue with descriptor = %d --------> ", descriptor);
-	
-	while(que != NULL)
-	{
-		if(que->msgid == descriptor)
-		{
-			printf(" ok \n");
-			return que;
-		}
-		que = que->next;
-	}
-	
-	printf(" not found\n");
-	return NULL;
+        struct Lab_msg_queue *que = root_msg_queue;
+
+        printf("\tFinding queue with descriptor = %d --------> ", descriptor);
+
+        while(que != NULL)
+        {
+                if(que->msgid == descriptor)
+                {
+                        printf(" ok \n");
+                        return que;
+                }
+                que = que->next;
+        }
+
+        printf(" not found\n");
+        return NULL;
 }
 
 int Lab_msgget(int key, int flag)

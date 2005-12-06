@@ -30,7 +30,7 @@ extern int debug;
 int main(int argc, char **argv)
 {
 	int mode;
-/*
+
 	// hmmmmm........why strcmp don't check any param to NULL????????? 
 	if (argv[1] != NULL)
 	{
@@ -51,7 +51,16 @@ int main(int argc, char **argv)
         printf("mistake in msgget\n");
         return -1;
     }
-
+   if(Lab_msgsnd(1,0,"hello1") < 0)
+    {
+        printf("mistake in msgsnd\n");
+        return -1;
+    }
+   if(Lab_msgsnd(2,0,"hello2") < 0)
+    {
+        printf("mistake in msgsnd\n");
+        return -1;
+}
     //process 2        
     if(fork_p(2,1,1,1) < 0)
     {
@@ -63,57 +72,16 @@ int main(int argc, char **argv)
         printf("mistake in msgget\n");
         return -1;
     }
-    if(Lab_msgsnd(3,0,"hello") < 0)
-    {
-        printf("mistake in msgsnd\n");
-        return -1;
-    }
-    if(Lab_msgrcv(3,0) < 0)
+    if(Lab_msgrcv(2,0) < 0)
     {
     	printf("mistake in msgsnd\n");
     	return -1;
     }
-        
-
-    //process 3
-    if(fork_p(3,1,1,2) < 0)
+    if(Lab_msgrcv(1,0) < 0)
     {
-        printf("cannot create proc\n");
-        return -1;
+    	printf("mistake in msgsnd\n");
+    	return -1;
     }
-    if(Lab_msgget(1, IPC_CREAT) < 0)
-    {
-        printf("mistake in msgget\n");
-        return -1;
-    }
-    if(Lab_msgsnd(3,0,"hi man") < 0)
-    {
-	    printf("mistake in msgsnd\n");
-	    return -1;
-    }
-	if(Lab_msgrcv(3,0) < 0)
-	{
-		printf("mistake in msgrcv\n");
-		return -1;
-	}
-	if(Lab_msgrcv(3,0) < 0)
-	{
-		printf("mistake in msgrcv\n");
-		return -1;
-	}
-    
-
-    //process 4
-    if(fork_p(4,1,1,5) < 0)
-    {
-        printf("cannot create proc\n");
-        return -1;
-    }
-/*/    
-	generator_procs(1,5,0);
-	generator_msgs(3,1,5,4);
-	if (make_msgrcv(4, 3, 1) == -1) //pid, m_type, msg_flag
-		return -1;
 
 	if (run() == -1)
 	{

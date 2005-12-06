@@ -17,40 +17,30 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-
-/*
- * Simple doubly linked list implementation.
- *
- * Some of the internal functions ("__xxx") are useful when
- * manipulating whole lists rather than single entries, as
- * sometimes we already know the next/prev entries and we can
- * generate better code by using them directly rather than
- * using the generic single-entry routines.
- */
 struct list_head
 {
-	struct list_head *next, *prev;
+        struct list_head *next, *prev;
 };
 
 //struct msg_msgseg
 //{
-//	struct msg_msgseg* next;
-	/* the next part of the message follows immediately */
+//      struct msg_msgseg* next;
+        /* the next part of the message follows immediately */
 //};
 
 /* used by in-kernel data structures */
 struct kern_ipc_perm
 {
-	//spinlock_t      lock;
-	//int             deleted;
-	int key;//key_t           key;
-	int uid;//uid_t           uid;
-	int gid;//gid_t           gid;
-	//uid_t           cuid;
-	//gid_t           cgid;
-	int mode;//mode_t          mode; 
-	//unsigned long   seq;
-	//void            *security;
+        //spinlock_t      lock;
+        //int             deleted;
+        int key;//key_t           key;
+        int uid;//uid_t           uid;
+        int gid;//gid_t           gid;
+        //uid_t           cuid;
+        //gid_t           cgid;
+        int mode;//mode_t          mode; 
+        //unsigned long   seq;
+        //void            *security;
 };
 
 /* one msq_queue structure for each present queue on the system */
@@ -69,27 +59,27 @@ struct Lab_msg_queue
 struct msg_msg
 {
 //<<<<<<< msg.h
-	//struct msg_msg *next;
-	struct list_head m_list;  //list of messages
-	long  m_type;            //type of message
+        //struct msg_msg *next;
+        struct list_head m_list;  //list of messages
+        long  m_type;            //type of message
 
-	struct msg_msg *next;
+        struct msg_msg *next;
 //=======
-//	struct msg_msg *next; 
+//      struct msg_msg *next; 
         char * text;
-//	long  m_type;
+//      long  m_type;
 //>>>>>>> 1.10
 };
 
 /* one msg_receiver structure for each sleeping receiver */
 struct msg_receiver
 {
-	struct msg_receiver *next;
-	struct process* r_prc;
- 
-	int r_mode;
-	long r_msgtype;
-	long r_maxsize;
+        struct msg_receiver *next;
+        struct process* r_prc;
+
+        int r_mode;
+        long r_msgtype;
+        long r_maxsize;
 };
 
 #define IPC_PRIVATE 0

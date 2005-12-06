@@ -34,7 +34,7 @@ int scheduler(void)
     prc = Find_max_prio();
 
     current_proc = prc;
-    
+
     printf("\nbegin work process with pid %d\n",prc->pid);
 
     if(prc->code == NULL)
@@ -45,7 +45,7 @@ int scheduler(void)
     {
         ExecCode(prc);
     }
-    
+
     printf("end   work process with pid %d\n",prc->pid);
 
     return 0;
@@ -53,16 +53,15 @@ int scheduler(void)
 
 int run (void)
 {
-	printf("\n---------------------------------------------------\n");
-	printf("------------------Starting scheduler---------------\n");
-	printf("---------------------------------------------------\n");
-	while(number_of_tasks != 0)
-	{
-		printf("\n-----------number of tasks = %d--------", number_of_tasks);
-		if ((scheduler()) == 1)
-			break;
-	}
+        printf("\n---------------------------------------------------\n");
+        printf("------------------Starting scheduler---------------\n");
+        printf("---------------------------------------------------\n");
+        while(number_of_tasks != 0)
+        {
+                printf("\n-----------number of tasks = %d--------", number_of_tasks);
+                if ((scheduler()) == 1)
+                        break;
+        }
 
-	return 0;
+        return 0;
 }
-	

@@ -23,37 +23,37 @@
 
 struct tsk
 {
-	int tsk; //0 msgsnd, 1 msgrcv, 2 msgget
-	int num_param;
-	int param[5];
+        int tsk; //0 msgsnd, 1 msgrcv, 2 msgget
+        int num_param;
+        int param[5];
         char *text;
-	struct tsk *next;
+        struct tsk *next;
 };
 
 struct descriptor
 {
-	int descrptr;
-	struct descriptor *next;
+        int descrptr;
+        struct descriptor *next;
 };
 
 /* Structure for the process */
 struct process
 {
-	int pid;
-	int uid;
-	int gid;
-	int prio;
-	int runned;
-	int run_time;
-	int run;       //sleep or not for msg
-	
-	struct tsk *code;
-	
-	struct descriptor *dscrptr;
-	
-	int search_msg;
-	
-	struct process *next;
+        int pid;
+        int uid;
+        int gid;
+        int prio;
+        int runned;
+        int run_time;
+        int run;       //sleep or not for msg
+
+        struct tsk *code;
+
+        struct descriptor *dscrptr;
+
+        int search_msg;
+
+        struct process *next;
 };
 
 #define SEARCH_ANY              1

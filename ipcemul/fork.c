@@ -30,7 +30,7 @@ int number_of_tasks = 0; //gives to scheduler knowledge how much work
 int debug = 0; //4 debug
 
 extern struct Lab_msg_queue *root_msg_queue;
-extern struct msg_receiver *root_msg_reciever; 
+extern struct msg_receiver *root_msg_reciever;
 
 struct process *current_proc = NULL;
 struct process *root_process = NULL;
@@ -40,32 +40,32 @@ struct process *Find_process(int pid)  //finding link to process with pid
     struct process *prc = root_process;
 
     if (debug == 1)
-	    printf("\tin Find_process\n\t");
+            printf("\tin Find_process\n\t");
     while(prc != NULL)
     {
         if (debug == 1)
-		printf("  pid = %d", prc->pid);
-	if (prc->pid == pid)
+                printf("  pid = %d", prc->pid);
+        if (prc->pid == pid)
             return prc;
         prc = prc->next;
     }
 
     if (debug == 1)
-	    printf("\nnothing found\n");
+            printf("\nnothing found\n");
     return NULL;
 }
 
 void print_task_type(int task_type,int pid)
 {
-	printf("\nProcess with pid=%d get new task. ",pid);
-	printf("Task number %d type ",number_of_tasks);
-	switch (task_type)
-	{
-		case 0:printf("msgsnd\n");break; 
-		case 1:printf("msgrcv\n");break;
-		case 2:printf("msgget\n");break;
-	}
-	return;
+        printf("\nProcess with pid=%d get new task. ",pid);
+        printf("Task number %d type ",number_of_tasks);
+        switch (task_type)
+        {
+                case 0:printf("msgsnd\n");break;
+                case 1:printf("msgrcv\n");break;
+                case 2:printf("msgget\n");break;
+        }
+        return;
 }
 
 int fork_p(int pid, int uid, int gid, int prio)
@@ -90,8 +90,7 @@ int fork_p(int pid, int uid, int gid, int prio)
         prc->runned = 0;
         prc->run_time = 0;
         prc->search_msg = 0;
-	prc->run = 1;
-
+        prc->run = 1;
         /* New process is situated before first process (stack) */
         prc->next = root_process;
 
@@ -108,7 +107,7 @@ int fork_p(int pid, int uid, int gid, int prio)
         printf("tsk fork: ");
         printf("we have process with pid = %d\n",pid);
 
-	return (-1);
+        return (-1);
     }
 
     //printf("time create process with pid %d is %d\n",pid, *timeptr);
@@ -125,18 +124,18 @@ int AddCode(int num,...)
     int *pp;
     struct process *prc = NULL;
     struct tsk *task = NULL;
-    struct tsk *tsk_temp = NULL; 
+    struct tsk *tsk_temp = NULL;
 
     va_start(ap,num);
     pp = &num;
-    
+
     task = (struct tsk *)malloc(sizeof(struct tsk));
     if(task == NULL)
     {
         printf("cannot alloc mem\n");
         return -1;
     }
-	number_of_tasks++;
+        number_of_tasks++;
     //prc = Find_process(*(++pp));
     prc = current_proc;
     task->tsk = va_arg(ap,int);
@@ -146,7 +145,7 @@ int AddCode(int num,...)
     for(i=1;i<num-1;i++)
     {
         task->param[i]=va_arg(ap,int);
-	printf("\t\tadded param %d = %d\n",i, task->param[i]);
+        printf("\t\tadded param %d = %d\n",i, task->param[i]);
     }
 //this is not absolutly good thing but it works
 //if this sending task then copy link to text else copy last int param
@@ -163,19 +162,21 @@ int AddCode(int num,...)
             task->param[i]=va_arg(ap,int);
         }
     task->next = NULL;
-	//adding new task at the end of stack
-    tsk_temp = prc->code;
+        //adding new task at the end of stack
+	tsk_temp = prc->code;
     va_end(ap);
     while (tsk_temp != NULL)
     {
         if(tsk_temp->next == NULL)
         {
             tsk_temp->next = task;
+            //prc->code->next = task;
             return 0;
         }
         tsk_temp = tsk_temp->next;
+        //prc->code = prc->code->next;
     }
-	//if there are no tasks this will be the first
+        //if there are no tasks this will be the first
     prc->code = task;
     return 0;
 }
@@ -183,11 +184,11 @@ int AddCode(int num,...)
 void RemoveCode(struct process *prc)
 {
     struct tsk *tsk_h = prc->code;
-    
+
     printf("\tfunct execed, del it\n");
     prc->code = prc->code->next;
     free(tsk_h);
-    
+
     number_of_tasks--;
 }
 
@@ -224,7 +225,7 @@ int ExecCode(struct process *prc)
     if(prc->code->tsk == MSGSND)
     {
         printf("exec msgsnd\n");
-	result = Lab_sys_msgsnd(prc->code->param[1], prc->code->param[2],prc->code->text);
+        result = Lab_sys_msgsnd(prc->code->param[1], prc->code->param[2],prc->code->text);
         if(result < 0)
         {
             printf("mistake in msgrcv\n");
@@ -235,9 +236,9 @@ int ExecCode(struct process *prc)
     else if(prc->code->tsk == MSGRCV)
     {
         printf("before Sort\n");
-	sort_msg(0);
-	printf("exec msgrcv\n");
-	result = Lab_sys_msgrcv(prc->code->param[1], prc->code->param[2]);
+        sort_msg(0);
+        printf("exec msgrcv\n");
+        result = Lab_sys_msgrcv(prc->code->param[1], prc->code->param[2]);
         if(result < 0)
         {
             printf("mistake in msgrcv\n");
@@ -251,12 +252,12 @@ int ExecCode(struct process *prc)
     else if(prc->code->tsk == MSGGET)
     {
         printf("exec msgget\n");
-	if (Lab_sys_msgget(prc->code->param[1], prc->code->param[2]) < 0)
+        if (Lab_sys_msgget(prc->code->param[1], prc->code->param[2]) < 0)
         {
             printf("mistake in msgget\n");
             return -1;
         }
-        prc->dscrptr = current_proc->dscrptr; //????? what this means?????
+        //prc->dscrptr = current_proc->dscrptr; //????? what this means?????
         RemoveCode(prc);
     }
     else
@@ -274,10 +275,10 @@ struct process *Find_max_prio(void)
     struct process *max_prc = NULL;
     int max = -1;
     struct process *list = root_process;
-	/*if there are no runned processes 
-	   it will bring them up
-	   and  count them
-	*/
+        /*if there are no runned processes 
+           it will bring them up
+           and  count them
+        */
     if(nr_running == 0)
     {
         while(list != NULL)
@@ -299,7 +300,7 @@ struct process *Find_max_prio(void)
 
     list = root_process;
 
-	//finding process with max prio
+        //finding process with max prio
 
     while(list != NULL)
     {
