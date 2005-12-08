@@ -29,26 +29,27 @@ extern int number_of_tasks;
 
 int scheduler(void)
 {
-    struct process *prc;
+	struct process *prc;
 
-    prc = Find_max_prio();
+	prc = Find_max_prio();
 
-    current_proc = prc;
+	current_proc = prc;
 
-    printf("\nbegin work process with pid %d\n",prc->pid);
+	if (prc->run)
+	{
+		printf("\nbegin work process with pid %d\n",prc->pid);
 
-    if(prc->code == NULL)
-    {
-        printf("NULL proc(there are no tasks for it)\n");
-    }
-    else
-    {
-        ExecCode(prc);
-    }
+		if(prc->code == NULL)
+		{
+			printf("NULL proc(there are no tasks for it)\n");
+		}
+		else
+			ExecCode(prc);
 
-    printf("end   work process with pid %d\n",prc->pid);
+		printf("end   work process with pid %d\n",prc->pid);
+	}
 
-    return 0;
+	return 0;
 }
 
 int run (void)

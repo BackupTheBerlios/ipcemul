@@ -40,6 +40,122 @@ struct msg_receiver *root_msg_reciever = NULL;
 extern struct process *current_proc;
 extern int number_of_tasks;
 
+int FindInWaitingProc(int msg_type)
+{
+	struct msg_receiver *prc_rcv = root_msg_reciever;
+	struct msg_receiver *prev_prc_rcv = NULL;
+	struct process *sleep_proc;
+
+	if (root_msg_reciever != NULL)
+	{
+		switch (prc_rcv->r_mode)
+		{
+			case SEARCH_EQUAL:
+				while (prc_rcv != NULL)
+				{
+					if (prc_rcv->r_msgtype == msg_type)
+					{
+						printf("\t found in rcv_queue_wait msg))!\n");
+						//now we must delete that function from sleeping proc
+						sleep_proc = Find_process(prc_rcv->r_prc->pid);
+						if (sleep_proc == NULL)
+						{
+							printf("\t Cannot find sleeping process!!\n");
+						}
+						sleep_proc->run = 1;
+						RemoveCode(sleep_proc);
+						if (prev_prc_rcv == NULL)
+						{
+							root_msg_reciever = prc_rcv->next;
+							free(prc_rcv);
+							return 1;
+						}
+					}
+					prev_prc_rcv = prc_rcv;
+					prc_rcv = prc_rcv->next;
+				}
+				break;
+			case SEARCH_ANY: 
+				while (prc_rcv != NULL)
+				{
+					if (1)
+					{
+						printf("\t found in rcv_queue_wait msg))!\n");
+						//now we must delete that function from sleeping proc
+						sleep_proc = Find_process(prc_rcv->r_prc->pid);
+						if (sleep_proc == NULL)
+						{
+							printf("\t Cannot find sleeping process!!\n");
+						}
+						sleep_proc->run = 1;
+						RemoveCode(sleep_proc);
+						if (prev_prc_rcv == NULL)
+						{
+							root_msg_reciever = prc_rcv->next;
+							free(prc_rcv);
+							return 1;
+						}
+					}
+					prev_prc_rcv = prc_rcv;
+					prc_rcv = prc_rcv->next;
+				}
+				break;
+			case SEARCH_LESSEQUAL: 
+				while (prc_rcv != NULL)
+				{
+					if (prc_rcv->r_msgtype < msg_type)
+					{
+						printf("\t found in rcv_queue_wait msg))!\n");
+						//now we must delete that function from sleeping proc
+						sleep_proc = Find_process(prc_rcv->r_prc->pid);
+						if (sleep_proc == NULL)
+						{
+							printf("\t Cannot find sleeping process!!\n");
+						}
+						sleep_proc->run = 1;
+						RemoveCode(sleep_proc);
+						if (prev_prc_rcv == NULL)
+						{
+							root_msg_reciever = prc_rcv->next;
+							free(prc_rcv);
+							return 1;
+						}
+					}
+					prev_prc_rcv = prc_rcv;
+					prc_rcv = prc_rcv->next;
+				}
+				break;
+			case SEARCH_NOTEQUAL: 
+				while (prc_rcv != NULL)
+				{
+					if (prc_rcv->r_msgtype != msg_type)
+					{
+						printf("\t found in rcv_queue_wait msg))!\n");
+						//now we must delete that function from sleeping proc
+						sleep_proc = Find_process(prc_rcv->r_prc->pid);
+						if (sleep_proc == NULL)
+						{
+							printf("\t Cannot find sleeping process!!\n");
+						}
+						sleep_proc->run = 1;
+						RemoveCode(sleep_proc);
+						if (prev_prc_rcv == NULL)
+						{
+							root_msg_reciever = prc_rcv->next;
+							free(prc_rcv);
+							return 1;
+						}
+					}
+					prev_prc_rcv = prc_rcv;
+					prc_rcv = prc_rcv->next;
+				}
+				break;
+		}
+	}
+
+	return 0;
+}
+
 struct Lab_msg_queue *Find_ipc_key(int key)
 {
     struct Lab_msg_queue *ipc_k = root_msg_queue;
@@ -129,7 +245,7 @@ int Lab_sys_msgrcv(long type, int flag)
         struct Lab_msg_queue *queue = NULL;
         struct msg_msg *msg = root_msg_msg;
 //      struct list_head *list = NULL;
-//      struct msg_receiver *msg_r;
+	struct msg_receiver *msg_r;
         int result;
         struct process *prc = current_proc;
         int time = 0;
@@ -141,7 +257,7 @@ int Lab_sys_msgrcv(long type, int flag)
 
       if (prc->dscrptr == NULL)
       {
-              printf("\thmm....dscrptr == NULL\n");
+              printf("\tqueue was deleted during trying rcv msg or it is does not exist\n");
               exit(-1);
       }
         queue = FindQueue(prc->dscrptr->descrptr);
@@ -167,22 +283,21 @@ int Lab_sys_msgrcv(long type, int flag)
         {
                 if (flag & IPC_NOWAIT)
                         return 0;
-//              printf("\tmsg == NULL\n");
-                return 0;
-                //msg_r = (struct msg_receiver *)malloc(sizeof(struct msg_receiver));
-                //if(msg_r == NULL)
-                //{
-                //      printf("cannot alloc mem\n");
-                //      return -1;
-                //}
-                //printf("\tadd proc to msg_rcv\n");
-                //current_proc->run = 0; //go to sleep
-                //msg_r->r_prc = current_proc;
-                //msg_r->r_mode = mode;
-                //msg_r->r_msgtype = current_proc->code->param[1];
-                //msg_r->next = root_msg_reciever;
-                //root_msg_reciever = msg_r;
-                //return 1;
+		printf("\tmsg == NULL, wait for message\n");
+		msg_r = (struct msg_receiver *)malloc(sizeof(struct msg_receiver));
+                if(msg_r == NULL)
+                {
+                      printf("cannot alloc mem\n");
+                      return -1;
+                }
+                printf("\tadd proc to msg_rcv\n");
+                current_proc->run = 0; //go to sleep
+                msg_r->r_prc = current_proc;
+                msg_r->r_mode = mode;
+                msg_r->r_msgtype = current_proc->code->param[1];
+                msg_r->next = root_msg_reciever;
+                root_msg_reciever = msg_r;
+		return 1;
         }
         else
         {
@@ -236,19 +351,22 @@ int Lab_sys_msgsnd(int msg_type, int flag,char*text)
 
 //      if ()
 */
-        msg = (struct msg_msg *)malloc(sizeof(struct msg_msg));
-        if(msg == NULL)
-        {
-                printf("cannot alloc mem\n");
-                return -1;
-        }
-        msg->m_type = msg_type;
-        msg->text=text;
-        msg->next = root_msg_msg;
-        root_msg_msg = msg;
+        if (!FindInWaitingProc(msg_type))
+	{
+		msg = (struct msg_msg *)malloc(sizeof(struct msg_msg));
+		if(msg == NULL)
+		{
+			printf("cannot alloc mem\n");
+			return -1;
+		}
+		msg->m_type = msg_type;
+		msg->text=text;
+		msg->next = root_msg_msg;
+		root_msg_msg = msg;
 
 
-        printf("\tmsg with type = %d send\n", msg_type);
+		printf("\tmsg with type = %d send\n", msg_type);
+	}
 
         return 0;
 }
