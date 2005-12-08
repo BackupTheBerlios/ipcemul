@@ -27,6 +27,21 @@ extern struct process *root_process;
 extern struct process *current_proc;
 extern int number_of_tasks;
 
+int check()
+{
+	int check=0;
+	struct process *prc;
+	prc=root_process;
+	while(prc)
+	{
+		if( (prc->code) && (prc->run) )
+			check=1;
+		prc=prc->next;
+	};
+	return check;
+};
+	
+
 int scheduler(void)
 {
 	struct process *prc;
@@ -58,7 +73,13 @@ int run (void)
         printf("------------------Starting scheduler---------------\n");
         printf("---------------------------------------------------\n");
         while(number_of_tasks != 0)
-        {
+        {	
+		if(!(check())) //if there are only sleeping procs or procs with NULL code
+				// so we are to do nothing
+		{
+			printf("There are no active processes in queue, so suspending...\n");
+			while(1);
+		};
                 printf("\n-----------number of tasks = %d--------", number_of_tasks);
                 if ((scheduler()) == 1)
                         break;

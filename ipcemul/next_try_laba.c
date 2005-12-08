@@ -58,9 +58,9 @@ int main(int argc, char **argv)
     }
    if(Lab_msgsnd(2,0,"hello2") < 0)
     {
-        printf("mistake in msgsnd\n");
+       printf("mistake in msgsnd\n");
         return -1;
-}
+    }
     //process 2        
     if(fork_p(2,1,1,1) < 0)
     {
@@ -74,12 +74,12 @@ int main(int argc, char **argv)
     }
     if(Lab_msgrcv(2,0) < 0)
     {
-    	printf("mistake in msgsnd\n");
+    	printf("mistake in msgrcv\n");
     	return -1;
     }
     if(Lab_msgrcv(1,0) < 0)
     {
-    	printf("mistake in msgsnd\n");
+    	printf("mistake in msgrcv\n");
     	return -1;
     }
 

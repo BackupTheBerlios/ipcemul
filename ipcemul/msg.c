@@ -65,11 +65,12 @@ int FindInWaitingProc(int msg_type)
 						sleep_proc->run = 1;
 						RemoveCode(sleep_proc);
 						if (prev_prc_rcv == NULL)
-						{
 							root_msg_reciever = prc_rcv->next;
-							free(prc_rcv);
-							return 1;
-						}
+						else
+							prev_prc_rcv->next=prc_rcv->next;
+						free(prc_rcv);
+						return 1;
+						
 					}
 					prev_prc_rcv = prc_rcv;
 					prc_rcv = prc_rcv->next;
@@ -90,11 +91,12 @@ int FindInWaitingProc(int msg_type)
 						sleep_proc->run = 1;
 						RemoveCode(sleep_proc);
 						if (prev_prc_rcv == NULL)
-						{
 							root_msg_reciever = prc_rcv->next;
-							free(prc_rcv);
-							return 1;
-						}
+						else
+							prev_prc_rcv->next=prc_rcv->next;
+						free(prc_rcv);
+						return 1;
+						
 					}
 					prev_prc_rcv = prc_rcv;
 					prc_rcv = prc_rcv->next;
@@ -115,11 +117,12 @@ int FindInWaitingProc(int msg_type)
 						sleep_proc->run = 1;
 						RemoveCode(sleep_proc);
 						if (prev_prc_rcv == NULL)
-						{
 							root_msg_reciever = prc_rcv->next;
-							free(prc_rcv);
-							return 1;
-						}
+						else
+							prev_prc_rcv->next=prc_rcv->next;
+						free(prc_rcv);
+						return 1;
+						
 					}
 					prev_prc_rcv = prc_rcv;
 					prc_rcv = prc_rcv->next;
@@ -140,11 +143,11 @@ int FindInWaitingProc(int msg_type)
 						sleep_proc->run = 1;
 						RemoveCode(sleep_proc);
 						if (prev_prc_rcv == NULL)
-						{
 							root_msg_reciever = prc_rcv->next;
-							free(prc_rcv);
-							return 1;
-						}
+						else
+							prev_prc_rcv->next=prc_rcv->next;
+						free(prc_rcv);
+						return 1;
 					}
 					prev_prc_rcv = prc_rcv;
 					prc_rcv = prc_rcv->next;
