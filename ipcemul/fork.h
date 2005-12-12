@@ -72,3 +72,4 @@ int fork_p(int pid, int uid, int gid, int prio);
 int ExecCode(struct process *prc);
 int Add2proc_dscrptr(int msgid);
 struct process *Find_process(int pid);
+void RemoveCode(struct process *prc);

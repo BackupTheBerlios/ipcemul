@@ -29,7 +29,7 @@ extern int debug;
 
 int main(int argc, char **argv)
 {
-	int mode;
+	//int mode;
 
 	// hmmmmm........why strcmp don't check any param to NULL????????? 
 	if (argv[1] != NULL)

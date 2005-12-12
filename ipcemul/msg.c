@@ -182,7 +182,7 @@ struct Lab_msg_queue *Find_ipc_key(int key)
 int Lab_sys_msgget(int key, int msgflag)
 {
         struct Lab_msg_queue *ipc_ = NULL;
-        int id, ret;// = -EPERM;
+        //int id, ret;
 
         if (key == IPC_PRIVATE)
         {
