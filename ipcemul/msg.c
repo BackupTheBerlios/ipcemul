@@ -40,7 +40,7 @@ struct msg_receiver *root_msg_reciever = NULL;
 extern struct process *current_proc;
 extern int number_of_tasks;
 
-int FindInWaitingProc(int msg_type)
+int FindInWaitingProc(int msg_type,char *text)
 {
 	struct msg_receiver *prc_rcv = root_msg_reciever;
 	struct msg_receiver *prev_prc_rcv = NULL;
@@ -55,7 +55,11 @@ int FindInWaitingProc(int msg_type)
 				{
 					if (prc_rcv->r_msgtype == msg_type)
 					{
-						printf("\t found in rcv_queue_wait msg))!\n");
+						printf("\t Found sleeping process with pid=%d, which waiting  sending message!\n",prc_rcv->r_prc->pid);
+						printf("Delivering message to it...");
+
+						printf("   OK.Message was delivered\n");
+						printf("   Message is : \"%s\"\n",text); 
 						//now we must delete that function from sleeping proc
 						sleep_proc = Find_process(prc_rcv->r_prc->pid);
 						if (sleep_proc == NULL)
@@ -206,9 +210,10 @@ int Lab_sys_msgget(int key, int msgflag)
 
             ipc_->next = root_msg_queue;
             root_msg_queue = ipc_;
+	    printf("\tMake new queue with msgid = %d and key = %d \n", ipc_->msgid,key);
                 //ret = newque(key, msgflg);
         }
-        else if ((ipc_ = FindQueue(key)) == NULL)
+        else if ((ipc_ = Find_ipc_key(key)) == NULL)
         {
                 if (msgflag & IPC_CREAT)
                 {
@@ -226,6 +231,7 @@ int Lab_sys_msgget(int key, int msgflag)
                         ipc_->msgid = 1+(int) (10.0*rand()/(RAND_MAX+1.0));
                         ipc_->next = root_msg_queue;
                         root_msg_queue = ipc_;
+			printf("\tMake new queue with msgid = %d and key = %d \n", ipc_->msgid,key);
                 }
                 else
                 {
@@ -233,12 +239,21 @@ int Lab_sys_msgget(int key, int msgflag)
                         return -1;
                 }
         }
-        else if (msgflag & IPC_CREAT && msgflag & IPC_EXCL)
-                printf("\tqueue already exist\n");
+        else 
+	{
+		if (msgflag & IPC_CREAT && msgflag & IPC_EXCL)
+		{	
+                	printf("\tQueue already exist, and flags IPC_CREAT and IPC_EXCL were fixed\n");
+			printf("=================CAN'T GET MESSAGE QUEUE====================\n");
+			//current_proc->code=NULL;
+			return -1;
+		};
+			printf("\tGet access to queue with = %d and key = %d \n", ipc_->msgid,key);
+	}
 
         Add2proc_dscrptr(ipc_->msgid); //adding  queue id to the descriptors stek of current process
 
-        printf("\tmake new queue with msgid = %d\n", ipc_->msgid);
+        //printf("\tmake new queue with msgid = %d and key = %d \n", ipc_->msgid,key);
         return ipc_->msgid;
 }
 
@@ -261,8 +276,8 @@ int Lab_sys_msgrcv(long type, int flag)
  	if (prc->dscrptr == NULL)
       	{
               printf("\n=========CURRENT PROCESS DOESN'T HAVE OPENED QUEUE============\n");   
-	      printf("============================ABORTING============================\n");
-              exit(-1);
+	      printf("============================CAN'T RECEIVE============================\n");
+              return -1;
       	}
         queue = FindQueue(prc->dscrptr->descrptr);
         if(queue == NULL)
@@ -287,7 +302,7 @@ int Lab_sys_msgrcv(long type, int flag)
         {
                 if (flag & IPC_NOWAIT)
                         return 0;
-		printf("\tmsg == NULL, wait for message\n");
+		printf("\tmsg == NULL, wait for message, GO TO SLEEP\n");
 		msg_r = (struct msg_receiver *)malloc(sizeof(struct msg_receiver));
                 if(msg_r == NULL)
                 {
@@ -299,6 +314,7 @@ int Lab_sys_msgrcv(long type, int flag)
                 msg_r->r_prc = current_proc;
                 msg_r->r_mode = mode;
                 msg_r->r_msgtype = current_proc->code->param[1];
+		
                 msg_r->next = root_msg_reciever;
                 root_msg_reciever = msg_r;
 		return 1;
@@ -350,8 +366,8 @@ int Lab_sys_msgsnd(int msg_type, int flag,char*text)
 	if (current_proc->dscrptr == NULL)
       	{
               printf("\n=========CURRENT PROCESS DOESN'T HAVE OPENED QUEUE============\n");   
-	      printf("============================ABORTING============================\n");
-              exit(-1);
+	      printf("============================CAN'T SEND============================\n");
+              return -1;
       	}
 /*      
 //      if ((msq = FindQueue(current_proc->dscrptr->descrptr)) == NULL)
@@ -362,7 +378,7 @@ int Lab_sys_msgsnd(int msg_type, int flag,char*text)
 
 //      if ()
 */
-        if (!FindInWaitingProc(msg_type))
+        if (!FindInWaitingProc(msg_type,text))
 	{
 		msg = (struct msg_msg *)malloc(sizeof(struct msg_msg));
 		if(msg == NULL)
@@ -468,6 +484,25 @@ struct Lab_msg_queue *FindQueue(int descriptor)
         }
 
         printf(" not found\n");
+        return NULL;
+}
+struct Lab_msg_queue *FindQueueP(int descriptor)
+{
+        struct Lab_msg_queue *que = root_msg_queue;
+
+        //printf("\tfinding queue with descriptor = %d --------> ", descriptor);
+
+        while(que != NULL)
+        {
+                if(que->msgid == descriptor)
+                {
+                       // printf(" ok \n");
+                        return que;
+                }
+                que = que->next;
+        }
+
+        //printf(" not found\n");
         return NULL;
 }
 

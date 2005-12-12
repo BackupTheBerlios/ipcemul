@@ -80,6 +80,7 @@ struct msg_receiver
         int r_mode;
         long r_msgtype;
         long r_maxsize;
+	char *text;
 };
 
 #define IPC_PRIVATE 0

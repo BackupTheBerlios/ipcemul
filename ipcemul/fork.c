@@ -229,7 +229,7 @@ int ExecCode(struct process *prc)
         if(result < 0)
         {
             printf("mistake in msgrcv\n");
-            return -1;
+            //return -1;
         }
         RemoveCode(prc);
     }
@@ -242,7 +242,8 @@ int ExecCode(struct process *prc)
         if(result < 0)
         {
             printf("mistake in msgrcv\n");
-            return -1;
+		RemoveCode(prc);
+            //return -1;
         }
         else if (result == 1)
             ;
@@ -255,7 +256,7 @@ int ExecCode(struct process *prc)
         if (Lab_sys_msgget(prc->code->param[1], prc->code->param[2]) < 0)
         {
             printf("mistake in msgget\n");
-            return -1;
+            //return -1;
         }
         //prc->dscrptr = current_proc->dscrptr; //????? what this means?????
         RemoveCode(prc);
