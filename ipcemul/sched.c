@@ -35,10 +35,27 @@ int check()
 	while(prc)
 	{
 		if( (prc->code) && (prc->run) )
+		{
 			check=1;
+			break;
+		};
 		prc=prc->next;
 	};
 	return check;
+};
+
+int find_print_who_sleep()
+{
+	struct process *prc;
+	prc=root_process;
+	while(prc)
+	{
+		if( !(prc->run) )
+			printf("Process with pid #%d\n",prc->pid);
+		prc=prc->next;
+	};
+	printf("===============================================\n");
+	return 0;
 };
 	
 
@@ -77,13 +94,17 @@ int run (void)
 		if(!(check())) //if there are only sleeping procs or procs with NULL code
 				// so we are to do nothing
 		{
-			printf("There are no active processes in queue, so suspending...\n");
-			while(1);
+			printf("Finished, but there are some sleeping processes:\n");
+			find_print_who_sleep();
+			break;
+			//while(1);
 		};
                 printf("\n----------- number of tasks left = %d --------", number_of_tasks);
                 if ((scheduler()) == 1)
                         break;
         }
-
+	printf("\n---------------------------------------------------\n");
+        printf("----------------------Finished-----------------------\n");
+        printf("---------------------------------------------------\n");
         return 0;
 }

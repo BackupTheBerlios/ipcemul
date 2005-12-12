@@ -60,7 +60,7 @@ int main(int argc, char **argv)
     {
        printf("mistake in msgsnd\n");
         return -1;
-    }
+   }
     //process 2        
     if(fork_p(2,1,1,1) < 0)
     {

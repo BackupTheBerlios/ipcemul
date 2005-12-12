@@ -258,11 +258,12 @@ int Lab_sys_msgrcv(long type, int flag)
         mode = convert_mode(&type, flag);
 //      printf("\tafter conver_mode\n");
 
-      if (prc->dscrptr == NULL)
-      {
-              printf("\tqueue was deleted during trying rcv msg or it is does not exist\n");
+ 	if (prc->dscrptr == NULL)
+      	{
+              printf("\n=========CURRENT PROCESS DOESN'T HAVE OPENED QUEUE============\n");   
+	      printf("============================ABORTING============================\n");
               exit(-1);
-      }
+      	}
         queue = FindQueue(prc->dscrptr->descrptr);
         if(queue == NULL)
         {
@@ -344,7 +345,14 @@ int Lab_sys_msgsnd(int msg_type, int flag,char*text)
         {
                 printf("you must use msg type > 1\n");
                 exit(-1);
-        }
+        };
+	
+	if (current_proc->dscrptr == NULL)
+      	{
+              printf("\n=========CURRENT PROCESS DOESN'T HAVE OPENED QUEUE============\n");   
+	      printf("============================ABORTING============================\n");
+              exit(-1);
+      	}
 /*      
 //      if ((msq = FindQueue(current_proc->dscrptr->descrptr)) == NULL)
 //      {
@@ -439,7 +447,7 @@ int convert_mode(long* msgtyp, int msgflg)
 
                 return SEARCH_NOTEQUAL;
         }
-        printf("\tSeach equal\n");
+        printf("\tSearch equal\n");
         return SEARCH_EQUAL;
 }
 
