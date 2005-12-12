@@ -46,7 +46,7 @@ int main(int argc, char **argv)
       printf("cannot create proc\n");
         return -1;
     }
-    if(Lab_msgget(IPC_PRIVATE, IPC_CREAT) < 0)
+    if(Lab_msgget(1, IPC_CREAT) < 0)
     {
         printf("mistake in msgget\n");
         return -1;

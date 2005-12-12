@@ -52,7 +52,7 @@ int scheduler(void)
 
 	if (prc->run)
 	{
-		printf("\nbegin work process with pid %d\n",prc->pid);
+		printf("\nbegin working on process with pid %d\n",prc->pid);
 
 		if(prc->code == NULL)
 		{
@@ -61,7 +61,7 @@ int scheduler(void)
 		else
 			ExecCode(prc);
 
-		printf("end   work process with pid %d\n",prc->pid);
+		printf("finished working on process with pid %d\n",prc->pid);
 	}
 
 	return 0;
@@ -80,7 +80,7 @@ int run (void)
 			printf("There are no active processes in queue, so suspending...\n");
 			while(1);
 		};
-                printf("\n-----------number of tasks = %d--------", number_of_tasks);
+                printf("\n----------- number of tasks left = %d --------", number_of_tasks);
                 if ((scheduler()) == 1)
                         break;
         }

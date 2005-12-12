@@ -208,7 +208,7 @@ int Lab_sys_msgget(int key, int msgflag)
             root_msg_queue = ipc_;
                 //ret = newque(key, msgflg);
         }
-        else if ((ipc_ = Find_ipc_key(key)) == NULL)
+        else if ((ipc_ = FindQueue(key)) == NULL)
         {
                 if (msgflag & IPC_CREAT)
                 {
@@ -447,7 +447,7 @@ struct Lab_msg_queue *FindQueue(int descriptor)
 {
         struct Lab_msg_queue *que = root_msg_queue;
 
-        printf("\tFinding queue with descriptor = %d --------> ", descriptor);
+        printf("\tfinding queue with descriptor = %d --------> ", descriptor);
 
         while(que != NULL)
         {

@@ -57,8 +57,8 @@ struct process *Find_process(int pid)  //finding link to process with pid
 
 void print_task_type(int task_type,int pid)
 {
-        printf("\nProcess with pid=%d get new task. ",pid);
-        printf("Task number %d type ",number_of_tasks);
+        printf("\nProcess with pid=%d got new task. ",pid);
+        printf("Task number %d have type ",number_of_tasks);
         switch (task_type)
         {
                 case 0:printf("msgsnd\n");break;
@@ -185,7 +185,7 @@ void RemoveCode(struct process *prc)
 {
     struct tsk *tsk_h = prc->code;
 
-    printf("\tfunct execed, del it\n");
+    printf("\ttask executed, remove it\n");
     prc->code = prc->code->next;
     free(tsk_h);
 
