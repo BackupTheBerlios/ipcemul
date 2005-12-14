@@ -235,10 +235,10 @@ int ExecCode(struct process *prc)
     }
     else if(prc->code->tsk == MSGRCV)
     {
-        printf("before Sort\n");
+      /*  printf("before Sort\n");
         sort_msg(0);
         printf("exec msgrcv\n");
-        result = Lab_sys_msgrcv(prc->code->param[1], prc->code->param[2]);
+       */ result = Lab_sys_msgrcv(prc->code->param[1], prc->code->param[2]);
         if(result < 0)
         {
             printf("mistake in msgrcv\n");

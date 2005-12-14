@@ -322,7 +322,7 @@ int Lab_sys_msgrcv(long type, int flag)
         else
         {
                 printf("\tResult Ok\n");
-                printf("Recived message:%s\n",msg->text);
+                printf("\tMessage is : \"%s\"\n",msg->text);
                 FreeMsg(msg);
         }
 
